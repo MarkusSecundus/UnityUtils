@@ -2,7 +2,7 @@
 
 namespace MarkusSecundus.Utils.Input
 {
-    public class BasicInputAxisSupplier : InputAxisSupplier
+    public class BasicInputAxis : InputAxisSupplier
     {
         [SerializeField] string Axis;
         [SerializeField] bool UseRaw;

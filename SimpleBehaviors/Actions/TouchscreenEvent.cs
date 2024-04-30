@@ -20,13 +20,13 @@ namespace MarkusSecundus.Utils.Behaviors.Actions
 
         private void Update()
         {
-            if (Input.touchCount <= 0) return;
+            if (UnityEngine.Input.touchCount <= 0) return;
 
             var inverseScreenSize = new Vector2(1f / Camera.main.pixelWidth, 1f / Camera.main.pixelHeight);
 
-            for (int t = 0; t < Input.touchCount; ++t)
+            for (int t = 0; t < UnityEngine.Input.touchCount; ++t)
             {
-                var touch = Input.GetTouch(t);
+                var touch = UnityEngine.Input.GetTouch(t);
                 foreach (var ev in Events)
                 {
                     if (touch.phase == ev.Phase && ev.ScreenRect.Contains(touch.position.MultiplyElems(inverseScreenSize)))

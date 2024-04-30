@@ -11,7 +11,7 @@ namespace MarkusSecundus.Utils.Input
     public class VirtualJoystickAxis : InputAxisSupplier
     {
         [SerializeField] InputAxisSupplier _movementAxis;
-        [SerializeField] float _movementSpeed;
+        [SerializeField] float _movementSpeed = 1f;
 
         float _value;
         public override float Value => _value;

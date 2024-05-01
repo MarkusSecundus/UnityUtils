@@ -21,7 +21,7 @@ namespace MarkusSecundus.Utils.Behaviors.Actions
 
         void Update()
         {
-            if (InputSource.IsNotNil())
+            if (InputSource)
             {
                 if (InputSource.IsAnyKeyDown)
                 {

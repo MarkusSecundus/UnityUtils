@@ -1,4 +1,6 @@
-﻿using MarkusSecundus.Utils.Filesystem;
+﻿#if UNITY_EDITOR
+
+using MarkusSecundus.Utils.Filesystem;
 using System.IO;
 using UnityEditor;
 
@@ -20,3 +22,5 @@ namespace MarkusSecundus.Utils.Editor
         }
     }
 }
+
+#endif

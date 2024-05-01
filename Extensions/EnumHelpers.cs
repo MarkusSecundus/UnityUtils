@@ -22,7 +22,7 @@ namespace MarkusSecundus.Utils.Extensions
         /// </summary>
         /// <typeparam name="TEnum">Enum type</typeparam>
         /// <returns>Generateor that iterates through all values that are declared in given enum type</returns>
-        public static TEnum[] GetValues<TEnum>() where TEnum : System.Enum => (TEnum[])System.Enum.GetValues(typeof(TEnum));
+        public static IReadOnlyList<TEnum> GetValues<TEnum>() where TEnum : System.Enum => (TEnum[])System.Enum.GetValues(typeof(TEnum));
     }
 
 }

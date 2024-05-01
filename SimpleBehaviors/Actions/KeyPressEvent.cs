@@ -1,3 +1,5 @@
+using MarkusSecundus.Utils.Extensions;
+using MarkusSecundus.Utils.Input;
 using MarkusSecundus.Utils.Serialization;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,6 +13,7 @@ namespace MarkusSecundus.Utils.Behaviors.Actions
     /// </summary>
     public class KeyPressEvent : MonoBehaviour
     {
+        public KeyInputSource InputSource;
         /// <summary>
         /// Map of events to be invoked for specific keys being pressed
         /// </summary>
@@ -18,12 +21,26 @@ namespace MarkusSecundus.Utils.Behaviors.Actions
 
         void Update()
         {
-            if (UnityEngine.Input.anyKeyDown)
+            if (InputSource.IsNotNil())
             {
-                foreach (var (key, @event) in Events.Values)
+                if (InputSource.IsAnyKeyDown)
                 {
-                    if (UnityEngine.Input.GetKeyDown(key))
-                        @event.Invoke();
+                    foreach (var (key, @event) in Events.Values)
+                    {
+                        if (InputSource.GetKeyDown(key))
+                            @event.Invoke();
+                    }
+                }
+            }
+            else
+            {
+                if (UnityEngine.Input.anyKeyDown)
+                {
+                    foreach (var (key, @event) in Events.Values)
+                    {
+                        if (UnityEngine.Input.GetKeyDown(key))
+                            @event.Invoke();
+                    }
                 }
             }
         }

@@ -38,12 +38,11 @@ namespace MarkusSecundus.Utils.Procgen.Noise.WaveFunctionCollapse
             }
             throw new System.InvalidOperationException("Too many contradictions!");
         }
-        public static Array2D<int> DoGenerateOverlapping(Array2D<int> template, int width, int height, bool periodic, WfcModel.Heuristic heuristic, 
+        public static Array2D<int> DoGenerateOverlapping(Array2D<int> template, System.Random random, int width, int height, bool periodic, WfcModel.Heuristic heuristic, 
             int N=3, bool periodicInput=true, int symmetry=8, bool ground=false,
             int limit=-1, int generationAttempts=10
             )
         {
-            System.Random random = new();
             WfcModel model = new WfcOverlappingModel(template, N, width, height, periodicInput, periodic, symmetry, ground, heuristic);
 
             for (int k = 0; k < generationAttempts; k++)

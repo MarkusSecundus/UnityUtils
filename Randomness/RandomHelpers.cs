@@ -92,6 +92,7 @@ namespace MarkusSecundus.Utils.Randomness
         /// <param name="max">Max value, inclusive</param>
         /// <returns>Random value</returns>
         public static float NextFloat(this System.Random self, float min, float max) => (float)(min + self.NextDouble() * (max - min));
+        public static double NextDouble(this System.Random self, double min, double max) => (double)(min + self.NextDouble() * (max - min));
 
         /// <summary>
         /// Generate random <see cref="Vector3"/>

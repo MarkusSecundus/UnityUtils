@@ -39,7 +39,10 @@ namespace MarkusSecundus.Utils.Procgen.Chunking
         [field: SerializeField] public GameObject ChunkPrefab { get; private set; }
         
         [SerializeField]int _seed=-1;
-        public int Seed => _seed==-1?base.GetHashCode(): _seed;
+        //public int Seed => _seed==-1?_seed = new System.Random().Next(): _seed;
+
+        System.Random _rand;
+        public System.Random Rand => _rand ?? (_seed == -1 ? new System.Random() : new System.Random(_seed));
 
         private void Start()
         {

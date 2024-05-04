@@ -16,7 +16,7 @@ namespace MarkusSecundus.Utils.Procgen.Chunking
     {
         public void InitChunk(Vector3Int chunkCoords, ChunkSystem chunkSystem)
         {
-            var seed = _someArbitraryHashFunc(chunkSystem.Seed, chunkCoords.x, chunkCoords.y, chunkCoords.z);
+            var seed = _someArbitraryHashFunc(chunkSystem.Rand.Next(), chunkCoords.x, chunkCoords.y, chunkCoords.z);
             var rand = new System.Random(seed);
             IRandomizer.RandomizeAll(this.gameObject, rand);
             IRandomizedChunkInitializer.InitAll(this.gameObject, rand, chunkCoords, chunkSystem);

@@ -1,6 +1,7 @@
 ﻿// Copyright (C) 2016 Maxim Gumin, The MIT License (MIT)
 // copypasted from https://github.com/mxgmn/WaveFunctionCollapse
 
+using MarkusSecundus.Utils.Assets._Scripts.Utils.Datastructs;
 using System;
 
 namespace MarkusSecundus.Utils.Procgen.Noise.WaveFunctionCollapse
@@ -228,7 +229,7 @@ namespace MarkusSecundus.Utils.Procgen.Noise.WaveFunctionCollapse
             }
         }
 
-        public abstract void Save(string filename);
+        public abstract Array2D<int> Save();
 
         protected static int[] dx = { -1, 0, 1, 0 };
         protected static int[] dy = { 0, 1, 0, -1 };

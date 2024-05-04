@@ -1,6 +1,7 @@
 ﻿// Copyright (C) 2016 Maxim Gumin, The MIT License (MIT)
 // copypasted from https://github.com/mxgmn/WaveFunctionCollapse
 
+using MarkusSecundus.Utils.Assets._Scripts.Utils.Datastructs;
 using System;
 using System.Collections.Generic;
 
@@ -11,10 +12,11 @@ namespace MarkusSecundus.Utils.Procgen.Noise.WaveFunctionCollapse
         List<byte[]> patterns;
         List<int> colors;
 
-        public OverlappingModel(string name, int N, int width, int height, bool periodicInput, bool periodic, int symmetry, bool ground, Heuristic heuristic)
+        
+        public OverlappingModel(Array2D<int> template, int N, int width, int height, bool periodicInput, bool periodic, int symmetry, bool ground, Heuristic heuristic)
             : base(width, height, N, periodic, heuristic)
         {
-            var (bitmap, SX, SY) = BitmapHelper.LoadBitmap($"samples/{name}.png");
+            var (bitmap, SX, SY) = (template.BackingArray, template.Width, template.Height);
             byte[] sample = new byte[bitmap.Length];
             colors = new List<int>();
             for (int i = 0; i < sample.Length; i++)
@@ -105,7 +107,7 @@ namespace MarkusSecundus.Utils.Procgen.Noise.WaveFunctionCollapse
             }
         }
 
-        public override void Save(string filename)
+        public override Array2D<int> Save()
         {
             int[] bitmap = new int[MX * MY];
             if (observed[0] >= 0)
@@ -148,7 +150,8 @@ namespace MarkusSecundus.Utils.Procgen.Noise.WaveFunctionCollapse
                     bitmap[i] = unchecked((int)0xff000000 | ((r / contributors) << 16) | ((g / contributors) << 8) | b / contributors);
                 }
             }
-            BitmapHelper.SaveBitmap(bitmap, MX, MY, filename);
+            return new Array2D<int>(bitmap, MX);
+            //BitmapHelper.SaveBitmap(bitmap, MX, MY, filename);
         }
     }
 }

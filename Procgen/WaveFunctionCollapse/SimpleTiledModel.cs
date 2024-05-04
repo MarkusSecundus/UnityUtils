@@ -5,6 +5,8 @@ using System;
 using System.Linq;
 using System.Xml.Linq;
 using System.Collections.Generic;
+using MarkusSecundus.Utils.Assets._Scripts.Utils.Datastructs;
+using System.Diagnostics;
 
 namespace MarkusSecundus.Utils.Procgen.Noise.WaveFunctionCollapse
 {
@@ -15,18 +17,35 @@ namespace MarkusSecundus.Utils.Procgen.Noise.WaveFunctionCollapse
         int tilesize;
         bool blackBackground;
 
-        public SimpleTiledModel(string name, string subsetName, int width, int height, bool periodic, bool blackBackground, Heuristic heuristic) : base(width, height, 1, periodic, heuristic)
+        public record TileConfig(
+            bool Unique,
+            TileConfig.Subset[] Subsets,
+            TileConfig.Tile[] Tiles,
+            Dictionary<string, Array2D<int>> Tilesets,
+            TileConfig.Neighbor[] Neighbors
+            )
+        {
+        
+            public record Subset(string Name, string[] Tiles){}
+            public record Tile(string Name, char Symmetry='X', double Weight=1.0) { }
+            public record Neighbor(string Left, string Right) { }
+        }
+
+        public SimpleTiledModel(TileConfig cfg, string subsetName, int width, int height, bool periodic, bool blackBackground, Heuristic heuristic) : base(width, height, 1, periodic, heuristic)
         {
             this.blackBackground = blackBackground;
-            XElement xroot = XDocument.Load($"tilesets/{name}.xml").Root;
-            bool unique = xroot.Get("unique", false);
+            //XElement xroot = XDocument.Load($"tilesets/{name}.xml").Root;
+            bool unique = cfg.Unique;
 
             List<string> subset = null;
             if (subsetName != null)
             {
-                XElement xsubset = xroot.Element("subsets").Elements("subset").FirstOrDefault(x => x.Get<string>("name") == subsetName);
-                if (xsubset == null) Console.WriteLine($"ERROR: subset {subsetName} is not found");
-                else subset = xsubset.Elements("tile").Select(x => x.Get<string>("name")).ToList();
+                //XElement xsubset = xroot.Element("subsets").Elements("subset").FirstOrDefault(x => x.Get<string>("name") == subsetName);
+                //if (xsubset == null) Console.WriteLine($"ERROR: subset {subsetName} is not found");
+                //else subset = xsubset.Elements("tile").Select(x => x.Get<string>("name")).ToList();
+                var subs = cfg.Subsets.FirstOrDefault(s => s.Name == subsetName);
+                if (subs == null) UnityEngine.Debug.LogError($"ERROR: subset {subsetName} is not found");
+                else subset = subs.Tiles.ToList();
             }
 
             static int[] tile(Func<int, int, int> f, int size)
@@ -45,15 +64,18 @@ namespace MarkusSecundus.Utils.Procgen.Noise.WaveFunctionCollapse
             var action = new List<int[]>();
             var firstOccurrence = new Dictionary<string, int>();
 
-            foreach (XElement xtile in xroot.Element("tiles").Elements("tile"))
+            //foreach (XElement xtile in xroot.Element("tiles").Elements("tile"))
+            foreach (var xtile in cfg.Tiles)
             {
-                string tilename = xtile.Get<string>("name");
+                //string tilename = xtile.Get<string>("name");
+                string tilename = xtile.Name;
                 if (subset != null && !subset.Contains(tilename)) continue;
 
                 Func<int, int> a, b; //a is 90 degrees rotation, b is reflection
                 int cardinality;
 
-                char sym = xtile.Get("symmetry", 'X');
+                //char sym = xtile.Get("symmetry", 'X');
+                char sym = xtile.Symmetry;
                 if (sym == 'L')
                 {
                     cardinality = 4;
@@ -118,7 +140,9 @@ namespace MarkusSecundus.Utils.Procgen.Noise.WaveFunctionCollapse
                     for (int t = 0; t < cardinality; t++)
                     {
                         int[] bitmap;
-                        (bitmap, tilesize, tilesize) = BitmapHelper.LoadBitmap($"tilesets/{name}/{tilename} {t}.png");
+                        //(bitmap, tilesize, tilesize) = BitmapHelper.LoadBitmap($"tilesets/{name}/{tilename} {t}.png");
+                        var btmp = cfg.Tilesets[$"{tilename} {t}"];
+                        (bitmap, tilesize, tilesize) = (btmp.BackingArray, btmp.Width, btmp.Height);
                         tiles.Add(bitmap);
                         tilenames.Add($"{tilename} {t}");
                     }
@@ -126,7 +150,9 @@ namespace MarkusSecundus.Utils.Procgen.Noise.WaveFunctionCollapse
                 else
                 {
                     int[] bitmap;
-                    (bitmap, tilesize, tilesize) = BitmapHelper.LoadBitmap($"tilesets/{name}/{tilename}.png");
+                    //(bitmap, tilesize, tilesize) = BitmapHelper.LoadBitmap($"tilesets/{name}/{tilename}.png");
+                    var btmp = cfg.Tilesets[tilename];
+                    (bitmap, tilesize, tilesize) = (btmp.BackingArray, btmp.Width, btmp.Height);
                     tiles.Add(bitmap);
                     tilenames.Add($"{tilename} 0");
 
@@ -138,7 +164,8 @@ namespace MarkusSecundus.Utils.Procgen.Noise.WaveFunctionCollapse
                     }
                 }
 
-                for (int t = 0; t < cardinality; t++) weightList.Add(xtile.Get("weight", 1.0));
+                //for (int t = 0; t < cardinality; t++) weightList.Add(xtile.Get("weight", 1.0));
+                for (int t = 0; t < cardinality; t++) weightList.Add(xtile.Weight);
             }
 
             T = action.Count;
@@ -153,10 +180,13 @@ namespace MarkusSecundus.Utils.Procgen.Noise.WaveFunctionCollapse
                 for (int t = 0; t < T; t++) densePropagator[d][t] = new bool[T];
             }
 
-            foreach (XElement xneighbor in xroot.Element("neighbors").Elements("neighbor"))
+            //foreach (XElement xneighbor in xroot.Element("neighbors").Elements("neighbor"))
+            foreach (var xneighbor in cfg.Neighbors)
             {
-                string[] left = xneighbor.Get<string>("left").Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                string[] right = xneighbor.Get<string>("right").Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                //string[] left = xneighbor.Get<string>("left").Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                //string[] right = xneighbor.Get<string>("right").Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] left = xneighbor.Left.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] right = xneighbor.Right.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
                 if (subset != null && (!subset.Contains(left[0]) || !subset.Contains(right[0]))) continue;
 
@@ -201,7 +231,7 @@ namespace MarkusSecundus.Utils.Procgen.Noise.WaveFunctionCollapse
                 }
         }
 
-        public override void Save(string filename)
+        public override Array2D<int> Save()
         {
             int[] bitmapData = new int[MX * MY * tilesize * tilesize];
             if (observed[0] >= 0)
@@ -241,7 +271,8 @@ namespace MarkusSecundus.Utils.Procgen.Noise.WaveFunctionCollapse
                     }
                 }
             }
-            BitmapHelper.SaveBitmap(bitmapData, MX * tilesize, MY * tilesize, filename);
+            return new Array2D<int>(bitmapData, MX * tilesize);
+            //BitmapHelper.SaveBitmap(bitmapData, MX * tilesize, MY * tilesize, filename);
         }
 
         public string TextOutput()

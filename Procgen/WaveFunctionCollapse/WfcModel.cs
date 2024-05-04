@@ -6,7 +6,7 @@ using System;
 
 namespace MarkusSecundus.Utils.Procgen.Noise.WaveFunctionCollapse
 {
-    abstract class Model
+    public abstract class WfcModel
     {
         protected bool[][] wave;
 
@@ -30,7 +30,7 @@ namespace MarkusSecundus.Utils.Procgen.Noise.WaveFunctionCollapse
         public enum Heuristic { Entropy, MRV, Scanline };
         Heuristic heuristic;
 
-        protected Model(int width, int height, int N, bool periodic, Heuristic heuristic)
+        protected WfcModel(int width, int height, int N, bool periodic, Heuristic heuristic)
         {
             MX = width;
             MY = height;

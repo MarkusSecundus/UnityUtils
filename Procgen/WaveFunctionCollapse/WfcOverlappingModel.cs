@@ -7,13 +7,13 @@ using System.Collections.Generic;
 
 namespace MarkusSecundus.Utils.Procgen.Noise.WaveFunctionCollapse
 {
-    class OverlappingModel : Model
+    public class WfcOverlappingModel : WfcModel
     {
         List<byte[]> patterns;
         List<int> colors;
 
         
-        public OverlappingModel(Array2D<int> template, int N, int width, int height, bool periodicInput, bool periodic, int symmetry, bool ground, Heuristic heuristic)
+        public WfcOverlappingModel(Array2D<int> template, int N, int width, int height, bool periodicInput, bool periodic, int symmetry, bool ground, Heuristic heuristic)
             : base(width, height, N, periodic, heuristic)
         {
             var (bitmap, SX, SY) = (template.BackingArray, template.Width, template.Height);

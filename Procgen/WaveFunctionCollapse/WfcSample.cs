@@ -9,25 +9,25 @@ using UnityEngine;
 
 namespace MarkusSecundus.Utils.Procgen.Noise.WaveFunctionCollapse
 {
-    static class Program
+    public static class WfcSample
     {
 
-        static Array2D<int> DoGenerate(bool isOverlapping, int width, int height, bool periodic, Model.Heuristic heuristic, 
+        static Array2D<int> DoGenerate(bool isOverlapping, int width, int height, bool periodic, WfcModel.Heuristic heuristic, 
             int N=3, bool periodicInput=true, int symmetry=8, bool ground=false,
             string subset=null, bool blackBackground=false,
             int limit=-1, int generationAttempts=10
             )
         {
             System.Random random = new();
-            Model model;
+            WfcModel model;
 
             if (isOverlapping)
             {
-                model = new OverlappingModel(new Array2D<int>(), N, width, height, periodicInput, periodic, symmetry, ground, heuristic);
+                model = new WfcOverlappingModel(new Array2D<int>(), N, width, height, periodicInput, periodic, symmetry, ground, heuristic);
             }
             else
             {
-                model = new SimpleTiledModel(new(true, new SimpleTiledModel.TileConfig.Subset[0], new SimpleTiledModel.TileConfig.Tile[0], new(), new SimpleTiledModel.TileConfig.Neighbor[0]), subset, width, height, periodic, blackBackground, heuristic);
+                model = new WfcSimpleTiledModel(new(true, new WfcSimpleTiledModel.TileConfig.Subset[0], new WfcSimpleTiledModel.TileConfig.Tile[0], new(), new WfcSimpleTiledModel.TileConfig.Neighbor[0]), subset, width, height, periodic, blackBackground, heuristic);
             }
 
             for (int k = 0; k < generationAttempts; k++)
@@ -38,13 +38,13 @@ namespace MarkusSecundus.Utils.Procgen.Noise.WaveFunctionCollapse
             }
             throw new System.InvalidOperationException("Too many contradictions!");
         }
-        static Array2D<int> DoGenerateOverlapping(Array2D<int> template, int width, int height, bool periodic, Model.Heuristic heuristic, 
+        public static Array2D<int> DoGenerateOverlapping(Array2D<int> template, int width, int height, bool periodic, WfcModel.Heuristic heuristic, 
             int N=3, bool periodicInput=true, int symmetry=8, bool ground=false,
             int limit=-1, int generationAttempts=10
             )
         {
             System.Random random = new();
-            Model model = new OverlappingModel(template, N, width, height, periodicInput, periodic, symmetry, ground, heuristic);
+            WfcModel model = new WfcOverlappingModel(template, N, width, height, periodicInput, periodic, symmetry, ground, heuristic);
 
             for (int k = 0; k < generationAttempts; k++)
             {
@@ -54,15 +54,15 @@ namespace MarkusSecundus.Utils.Procgen.Noise.WaveFunctionCollapse
             }
             throw new System.InvalidOperationException("Too many contradictions!");
         }
-        static Array2D<int> DoGenerateTiled(SimpleTiledModel.TileConfig tileConfig, int width, int height, bool periodic, Model.Heuristic heuristic,
+        static Array2D<int> DoGenerateTiled(WfcSimpleTiledModel.TileConfig tileConfig, int width, int height, bool periodic, WfcModel.Heuristic heuristic,
             string subset = null, bool blackBackground = false,
             int limit = -1, int generationAttempts = 10
             )
         {
             System.Random random = new();
-            Model model;
+            WfcModel model;
 
-            model = new SimpleTiledModel(tileConfig, subset, width, height, periodic, blackBackground, heuristic);
+            model = new WfcSimpleTiledModel(tileConfig, subset, width, height, periodic, blackBackground, heuristic);
             
 
             for (int k = 0; k < generationAttempts; k++)

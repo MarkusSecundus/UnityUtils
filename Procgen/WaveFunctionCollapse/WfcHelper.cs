@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 
 namespace MarkusSecundus.Utils.Procgen.Noise.WaveFunctionCollapse
 {
-    static class Helper
+    static class WfcHelper
     {
         public static int Random(this double[] weights, double r)
         {

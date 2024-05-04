@@ -10,7 +10,7 @@ using System.Diagnostics;
 
 namespace MarkusSecundus.Utils.Procgen.Noise.WaveFunctionCollapse
 {
-    class SimpleTiledModel : Model
+    class WfcSimpleTiledModel : WfcModel
     {
         List<int[]> tiles;
         List<string> tilenames;
@@ -31,7 +31,7 @@ namespace MarkusSecundus.Utils.Procgen.Noise.WaveFunctionCollapse
             public record Neighbor(string Left, string Right) { }
         }
 
-        public SimpleTiledModel(TileConfig cfg, string subsetName, int width, int height, bool periodic, bool blackBackground, Heuristic heuristic) : base(width, height, 1, periodic, heuristic)
+        public WfcSimpleTiledModel(TileConfig cfg, string subsetName, int width, int height, bool periodic, bool blackBackground, Heuristic heuristic) : base(width, height, 1, periodic, heuristic)
         {
             this.blackBackground = blackBackground;
             //XElement xroot = XDocument.Load($"tilesets/{name}.xml").Root;

@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace MarkusSecundus.Utils.Assets._Scripts.Utils.Datastructs
+namespace MarkusSecundus.Utils.Datastructs
 {
     [System.Serializable]public struct Array2D<T>
     {

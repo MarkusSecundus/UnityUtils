@@ -1,7 +1,7 @@
 ﻿// Copyright (C) 2016 Maxim Gumin, The MIT License (MIT)
 // copypasted from https://github.com/mxgmn/WaveFunctionCollapse
 
-using MarkusSecundus.Utils.Assets._Scripts.Utils.Datastructs;
+using MarkusSecundus.Utils.Datastructs;
 using System;
 
 namespace MarkusSecundus.Utils.Procgen.Noise.WaveFunctionCollapse

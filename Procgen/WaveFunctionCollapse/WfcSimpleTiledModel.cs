@@ -5,8 +5,8 @@ using System;
 using System.Linq;
 using System.Xml.Linq;
 using System.Collections.Generic;
-using MarkusSecundus.Utils.Assets._Scripts.Utils.Datastructs;
 using System.Diagnostics;
+using MarkusSecundus.Utils.Datastructs;
 
 namespace MarkusSecundus.Utils.Procgen.Noise.WaveFunctionCollapse
 {

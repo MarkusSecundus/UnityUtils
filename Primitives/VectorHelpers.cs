@@ -256,6 +256,12 @@ namespace MarkusSecundus.Utils.Primitives
         /// <returns>Interpreted color</returns>
         public static Color AsHSV(this Vector3 v) => Color.HSVToRGB(v.x, v.y, v.z);
 
+        public static uint AsUintRGBA(this Color c) => (((uint)(c.r * 0xFF) & 0xFF)) | (((uint)(c.g * 0xFF) & 0xFF) << 8) | (((uint)(c.b * 0xFF) & 0xFF) << 16) | (((uint)(c.a * 0xFF) & 0xFF) << 24);
+        public static int AsIntRGBA(this Color c) => (int)c.AsUintRGBA();
+
+        public static Color UnpackRGBA(uint c) => new Color(((c) & 0xFF) * 1f / 0xFF, ((c >> 8) & 0xFF) * 1f / 0xFF, ((c >> 16) & 0xFF) * 1f / 0xFF, ((c >> 24) & 0xFF) * 1f / 0xFF);
+        public static Color UnpackRGBA(int c) => UnpackRGBA((uint)c);
+
         /// <summary>
         /// Convert given <see cref="Color"/> to <see cref="Vector3"/> with its x,y,z members containing H,S,V values
         /// </summary>

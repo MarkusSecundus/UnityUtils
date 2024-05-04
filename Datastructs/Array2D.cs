@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -25,9 +26,12 @@ namespace MarkusSecundus.Utils.Assets._Scripts.Utils.Datastructs
         public Array2D(int width, int height) : this(new T[width*height], width) { }
 
 
-        public IEnumerable<IEnumerable<T>> IterateLines()
+    }
+
+    public static class Array2DHelpers
+    {
+        public static IEnumerable<IEnumerable<T>> IterateLines<T>(this Array2D<T> self)
         {
-            var self = this;
             for (int y = 0; y < self.Height; ++y) yield return line(y);
 
             IEnumerable<T> line(int y)

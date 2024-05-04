@@ -38,13 +38,13 @@ namespace MarkusSecundus.Utils.Procgen.Noise.WaveFunctionCollapse
             }
             throw new System.InvalidOperationException("Too many contradictions!");
         }
-        static Array2D<int> DoGenerateOverlapping(int width, int height, bool periodic, Model.Heuristic heuristic, 
+        static Array2D<int> DoGenerateOverlapping(Array2D<int> template, int width, int height, bool periodic, Model.Heuristic heuristic, 
             int N=3, bool periodicInput=true, int symmetry=8, bool ground=false,
             int limit=-1, int generationAttempts=10
             )
         {
             System.Random random = new();
-            Model model = new OverlappingModel(new Array2D<int>(), N, width, height, periodicInput, periodic, symmetry, ground, heuristic);
+            Model model = new OverlappingModel(template, N, width, height, periodicInput, periodic, symmetry, ground, heuristic);
 
             for (int k = 0; k < generationAttempts; k++)
             {
@@ -54,7 +54,7 @@ namespace MarkusSecundus.Utils.Procgen.Noise.WaveFunctionCollapse
             }
             throw new System.InvalidOperationException("Too many contradictions!");
         }
-        static Array2D<int> DoGenerateTiled(int width, int height, bool periodic, Model.Heuristic heuristic,
+        static Array2D<int> DoGenerateTiled(SimpleTiledModel.TileConfig tileConfig, int width, int height, bool periodic, Model.Heuristic heuristic,
             string subset = null, bool blackBackground = false,
             int limit = -1, int generationAttempts = 10
             )
@@ -62,7 +62,7 @@ namespace MarkusSecundus.Utils.Procgen.Noise.WaveFunctionCollapse
             System.Random random = new();
             Model model;
 
-            model = new SimpleTiledModel(new(true, new SimpleTiledModel.TileConfig.Subset[0], new SimpleTiledModel.TileConfig.Tile[0], new(), new SimpleTiledModel.TileConfig.Neighbor[0]), subset, width, height, periodic, blackBackground, heuristic);
+            model = new SimpleTiledModel(tileConfig, subset, width, height, periodic, blackBackground, heuristic);
             
 
             for (int k = 0; k < generationAttempts; k++)

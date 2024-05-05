@@ -89,5 +89,9 @@ namespace MarkusSecundus.Utils.Primitives
         /// <param name="epsilon">Epsilon that defines closeness</param>
         /// <returns><c>true</c> IFF distance between the two numbers is smaller than <paramref name="epsilon"/></returns>
         public static bool IsCloseTo(this float f, float g, float? epsilon = null) => (f - g).IsNegligible(epsilon);
+
+        public static int Sqr(this int x) => x * x;
+        public static float Sqr(this float x) => x * x;
+        public static double Sqr(this double x) => x * x;
     }
 }

@@ -8,6 +8,7 @@ using UnityEngine;
 
 namespace MarkusSecundus.Utils.Behaviors.GameObjects
 {
+    [DefaultExecutionOrder(-1000)]
     public class TagSearchable : MonoBehaviour
     {
         static DefaultValDict<string, List<GameObject>> _values = new(k => new());

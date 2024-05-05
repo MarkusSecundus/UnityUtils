@@ -335,6 +335,8 @@ namespace MarkusSecundus.Utils.Primitives
         /// <returns>Cross product of the two vectors</returns>
         public static Vector3 Cross(this Vector3 a, Vector3 b) => Vector3.Cross(a, b);
 
+        public static float Cross(this Vector2 a, Vector2 b) => a.x * b.y - a.y * b.x;
+
         /// <summary>
         /// Multiply two vectors fieldwise
         /// </summary>

@@ -315,6 +315,7 @@ namespace MarkusSecundus.Utils.Primitives
         /// </summary>
         /// <returns>Distance between the two vectors</returns>
         public static float Distance(this Vector3 self, Vector3 b) => Vector3.Distance(self, b);
+        public static float DistanceSqr(this Vector3 self, Vector3 b) => Vector3.SqrMagnitude(self - b);
 
         /// <summary>
         /// Checks if any of the fields of the vector is <c>NaN</c>

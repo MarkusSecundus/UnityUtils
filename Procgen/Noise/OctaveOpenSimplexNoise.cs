@@ -1,4 +1,5 @@
 ﻿using MarkusSecundus.Utils.Randomness;
+using System.Numerics;
 
 namespace MarkusSecundus.Utils.Procgen.Noise
 {
@@ -32,6 +33,8 @@ namespace MarkusSecundus.Utils.Procgen.Noise
         public float Sample1F(double x, bool normalized=true) => (float)Sample1D(x,normalized);
         public double Sample1D(double x, bool normalized=true) => Sample2D(x, 0.0, normalized);
         public float Sample2F(double x, double y, bool normalized = true) => (float)Sample2D(x, y, normalized);
+        public float Sample2F(UnityEngine.Vector2 v, bool normalized = true) => Sample2F(v.x, v.y, normalized);
+        public double Sample2D(UnityEngine.Vector2 v, bool normalized = true) => Sample2D(v.x, v.y, normalized);
         public double Sample2D(double x, double y, bool normalized=true)
         {
             double result = 0.0;

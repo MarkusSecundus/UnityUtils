@@ -15,7 +15,8 @@ namespace MarkusSecundus.Utils.Behaviors.Automatization
         /// <summary>
         /// Range for the scale to be applied. X value will be used for Z as well to ensure symmetry
         /// </summary>
-        public Interval<Vector2> Scale = new Interval<Vector2>(Vector2.one, Vector2.one);
+        public Interval<Vector3> Scale = new Interval<Vector3>(Vector3.one, Vector3.one);
+        public Vector3SerializableSwizzle ScaleSwizzle = new Vector3SerializableSwizzle { X = Vector3SerializableSwizzle.SwizzleOption.X, Y = Vector3SerializableSwizzle.SwizzleOption.Y, Z = Vector3SerializableSwizzle.SwizzleOption.X };
         /// <summary>
         /// Range for the rotation to be applied. Euler angles in degrees.
         /// </summary>
@@ -28,7 +29,7 @@ namespace MarkusSecundus.Utils.Behaviors.Automatization
         /// <inheritdoc/>
         public void Randomize(System.Random random)
         {
-            var scale = random.Next(Scale).xyx();
+            var scale = random.Next(Scale).With(ScaleSwizzle);
             var rotation = random.Next(Rotation);
 
             transform.localScale = transform.localScale.MultiplyElems(scale);

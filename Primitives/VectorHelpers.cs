@@ -33,6 +33,7 @@ namespace MarkusSecundus.Utils.Primitives
                 throw new System.ArgumentException($"To use the type {nameof(FieldType.UseProvidedValue)}, use the other constructor that provides the value!");
             (Value, Field) = (default, type);
         }
+        public VectorField(Vector3SerializableSwizzle.SwizzleOption type): this((FieldType)type) { }
 
         /// <summary>
         /// Types of fields the FieldType can refer
@@ -92,6 +93,16 @@ namespace MarkusSecundus.Utils.Primitives
         {
             if (default(VectorField).Field != FieldType.UseOriginal)
                 throw new System.InvalidProgramException($"Assert failed: default({nameof(VectorField)}) must be equal to Null");
+        }
+    }
+    [System.Serializable]
+    public struct Vector3SerializableSwizzle
+    {
+        public SwizzleOption X, Y, Z;
+        [System.Serializable]
+        public enum SwizzleOption
+        {
+            KeepOriginal = VectorField.FieldType.UseOriginal, X = VectorField.FieldType.X, Y = VectorField.FieldType.Y, Z = VectorField.FieldType.Z
         }
     }
 
@@ -235,6 +246,8 @@ namespace MarkusSecundus.Utils.Primitives
             };
             return new Color(FieldValue(r, self.r), FieldValue(g, self.g), FieldValue(b, self.b), FieldValue(a, self.a));
         }
+
+        public static Vector3 With(this Vector3 self, Vector3SerializableSwizzle swizzle) => self.With(x: new VectorField(swizzle.X),y: new VectorField(swizzle.Y),z: new VectorField(swizzle.Z));
 
         /// <summary>
         /// Replace certain components of the provided euler angle.

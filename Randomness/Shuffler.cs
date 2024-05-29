@@ -23,7 +23,7 @@ namespace MarkusSecundus.Utils.Randomness
         public Shuffler(System.Random randomizer, IReadOnlyList<T> items, int windowSize)
         {
             rand =  randomizer;
-            window = items.RepeatList(windowSize).ToArray();
+            window = items.Repeat(windowSize).ToArray();
             nextIndex = window.Length;
         }
 

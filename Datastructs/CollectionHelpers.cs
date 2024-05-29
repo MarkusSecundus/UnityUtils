@@ -57,10 +57,16 @@ namespace MarkusSecundus.Utils.Datastructs
         /// <param name="self">Stream to be iterated multiple times</param>
         /// <param name="repeatCount">How many times to iterate through the stream</param>
         /// <returns>Generator that lazily iterates through given stream given number of times</returns>
-        public static IEnumerable<T> RepeatList<T>(this IEnumerable<T> self, int repeatCount)
+        public static IEnumerable<T> Repeat<T>(this IEnumerable<T> self, int? repeatCount)
         {
-            while (--repeatCount >= 0)
+            while ((repeatCount == null) || (--repeatCount >= 0))
                 foreach (var i in self) yield return i;
+        }
+
+        public static IEnumerable<T> Chain<T>(this IEnumerable<T> self, params IEnumerable<T>[] others)
+        {
+            foreach (var e in self) yield return e;
+            foreach (var it in others) foreach (var e in it) yield return e;
         }
 
         /// <summary>

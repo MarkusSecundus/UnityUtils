@@ -31,14 +31,14 @@ namespace MarkusSecundus.Utils.Behaviors.GameObjects
             return list;
         }
 
-        private void Awake()
+        protected virtual void Awake()
         {
             if (gameObject.tag == null) throw new System.Exception($"Object {name} claims to be tag-searchable, but has no tag!");
             if (GetComponent<TagSearchable>() != this) throw new System.Exception($"More than one {nameof(TagSearchable)} components on object {name}!");
             _values[gameObject.tag].Add(gameObject);
         }
 
-        private void OnDestroy()
+        protected virtual void OnDestroy()
         {
             if (gameObject.tag == null) return;
             if(_values.TryGetValue(gameObject.tag, out var list))

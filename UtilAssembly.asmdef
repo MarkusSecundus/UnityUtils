@@ -2,7 +2,8 @@
     "name": "UtilAssembly",
     "rootNamespace": "MarkusSecundus.Utils",
     "references": [
-        "Unity.TextMeshPro"
+        "Unity.TextMeshPro",
+        "DOTween.Modules"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -3,6 +3,7 @@
 using DG.Tweening;
 using MarkusSecundus.Utils.Primitives;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class FadeEffect : MonoBehaviour
@@ -11,9 +12,11 @@ public class FadeEffect : MonoBehaviour
     [SerializeField] float alphaLow = 0f;
     [SerializeField] float alphaHigh = 1f;
     [SerializeField] bool fadeOutOnStart = false;
+
+    [SerializeField] UnityEvent onStartupFade;
     private void Start()
     {
-        if (fadeOutOnStart) FadeOut();
+        if (fadeOutOnStart) FadeOut(onStartupFade.Invoke);
     }
     public void FadeOut() => FadeOut(duration_seconds);
     public void FadeOut(float duration) => FadeOut(null, duration_seconds);

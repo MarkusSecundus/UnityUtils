@@ -13,6 +13,8 @@ public class FadeEffect : MonoBehaviour
     [SerializeField] float alphaHigh = 1f;
     [SerializeField] bool fadeOutOnStart = false;
 
+    [SerializeField] Ease ease = Ease.Unset;
+
     [SerializeField] UnityEvent onStartupFade;
     private void Start()
     {
@@ -20,11 +22,11 @@ public class FadeEffect : MonoBehaviour
     }
     public void FadeOut() => FadeOut(duration_seconds);
     public void FadeOut(float duration) => FadeOut(null, duration_seconds);
-    public void FadeOut(System.Action onFinished, float? duration = null) => RunEffect(alphaHigh, alphaLow, duration??duration_seconds, onFinished);
+    public void FadeOut(System.Action onFinished, float? duration = null) => RunEffect(alphaHigh, alphaLow, duration??duration_seconds,ease, onFinished);
     public void FadeIn() => FadeIn(duration_seconds);
     public void FadeIn(float duration) => FadeIn(null, duration);
-    public void FadeIn(System.Action onFinished, float? duration=null) => RunEffect(alphaLow, alphaHigh, duration??duration_seconds, onFinished);
-    void RunEffect(float alphaBegin, float alphaEnd, float duration, System.Action onFinished=null)
+    public void FadeIn(System.Action onFinished, float? duration=null) => RunEffect(alphaLow, alphaHigh, duration??duration_seconds,ease, onFinished);
+    void RunEffect(float alphaBegin, float alphaEnd, float duration, Ease ease, System.Action onFinished=null)
     {
         gameObject.SetActive(true);
         Tween last = null;
@@ -32,7 +34,7 @@ public class FadeEffect : MonoBehaviour
         {
             rend.gameObject.SetActive(true);
             rend.color = rend.color.With(a: alphaBegin);
-            var tween = last = rend.DOFade(alphaEnd, duration_seconds);
+            var tween = last = rend.DOFade(alphaEnd, duration_seconds).SetEase(ease);
             if (alphaEnd <= 0f) tween.onComplete += () => rend.gameObject.SetActive(false);
         }
         if (last != null) last.onComplete += () =>

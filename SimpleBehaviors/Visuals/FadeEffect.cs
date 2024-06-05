@@ -8,25 +8,35 @@ using UnityEngine.UI;
 
 public class FadeEffect : MonoBehaviour
 {
+    [SerializeField] string _comment;
     [SerializeField] float duration_seconds = 1f;
     [SerializeField] float alphaLow = 0f;
     [SerializeField] float alphaHigh = 1f;
-    [SerializeField] bool fadeOutOnStart = false;
+    [SerializeField] ActionOnStart _onStart;
 
     [SerializeField] Ease ease = Ease.Unset;
 
-    [SerializeField] UnityEvent onStartupFade;
+    [SerializeField] UnityEvent onComplete;
+
+    [System.Serializable]public enum ActionOnStart
+    {
+        DoNothing = 0, FadeIn, FadeOut
+    }
+
+
     private void Start()
     {
-        if (fadeOutOnStart) FadeOut(onStartupFade.Invoke);
+        if (_onStart == ActionOnStart.FadeIn)   FadeIn(onComplete.Invoke);
+        else if (_onStart == ActionOnStart.FadeOut) FadeOut(onComplete.Invoke);
     }
     public void FadeOut() => FadeOut(duration_seconds);
     public void FadeOut(float duration) => FadeOut(null, duration_seconds);
-    public void FadeOut(System.Action onFinished, float? duration = null) => RunEffect(alphaHigh, alphaLow, duration??duration_seconds,ease, onFinished);
+    public void FadeOut(System.Action onFinished, float? duration = null, bool includeDefaultAction = true) => _runEffect(alphaHigh, alphaLow, duration??duration_seconds,ease, onFinished, includeDefaultAction);
     public void FadeIn() => FadeIn(duration_seconds);
     public void FadeIn(float duration) => FadeIn(null, duration);
-    public void FadeIn(System.Action onFinished, float? duration=null) => RunEffect(alphaLow, alphaHigh, duration??duration_seconds,ease, onFinished);
-    void RunEffect(float alphaBegin, float alphaEnd, float duration, Ease ease, System.Action onFinished=null)
+    public void FadeIn(System.Action onFinished, float? duration=null, bool includeDefaultAction=true) => _runEffect(alphaLow, alphaHigh, duration??duration_seconds,ease, onFinished, includeDefaultAction);
+
+    void _runEffect(float alphaBegin, float alphaEnd, float duration, Ease ease, System.Action onFinished=null, bool includeDefaultAction=true)
     {
         gameObject.SetActive(true);
         Tween last = null;
@@ -39,9 +49,13 @@ public class FadeEffect : MonoBehaviour
         }
         if (last != null) last.onComplete += () =>
         {
+            this.onComplete.Invoke();
             onFinished?.Invoke();
         };
         else
+        {
+            this.onComplete.Invoke();
             onFinished?.Invoke();
+        }
     }
 }

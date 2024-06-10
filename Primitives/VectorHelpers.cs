@@ -342,6 +342,7 @@ namespace MarkusSecundus.Utils.Primitives
         /// </summary>
         /// <returns>Dot product of the two vectors</returns>
         public static float Dot(this Vector3 a, Vector3 b) => Vector3.Dot(a, b);
+        public static float Dot(this Vector2 a, Vector2 b) => Vector2.Dot(a, b);
         /// <summary>
         /// Fluent shortcut for <see cref="Vector3.Cross"/>
         /// </summary>
@@ -376,6 +377,15 @@ namespace MarkusSecundus.Utils.Primitives
         public static float MaxMember(this Vector3 v) => Mathf.Max(Mathf.Max(v.x, v.y), v.z);
         public static float MinItem(this Vector3 v) => Mathf.Min(Mathf.Min(v.x, v.y), v.z);
 
+        public static bool GreaterThanAll(this Vector2 a, Vector2 b) => a.x > b.x && a.y > b.y;
+        public static bool GreaterThanAll(this Vector3 a, Vector3 b) => a.x > b.x && a.y > b.y&& a.z > b.z;
+        public static bool GreaterThanOrEqualAll(this Vector2 a, Vector2 b) => a.x >= b.x && a.y >= b.y;
+        public static bool GreaterThanOrEqualAll(this Vector3 a, Vector3 b) => a.x >= b.x && a.y >= b.y&& a.z >= b.z;
+        public static bool LessThanAll(this Vector2 a, Vector2 b) => a.x < b.x && a.y < b.y;
+        public static bool LessThanAll(this Vector3 a, Vector3 b) => a.x < b.x && a.y < b.y&& a.z < b.z;
+        public static bool LessThanOrEqualAll(this Vector2 a, Vector2 b) => a.x <= b.x && a.y <= b.y;
+        public static bool LessThanOrEqualAll(this Vector3 a, Vector3 b) => a.x <= b.x && a.y <= b.y&& a.z <= b.z;
+
         public static Vector3Int AsInt(this Vector3 v) => new Vector3Int((int)v.x, (int)v.y, (int)v.z);
         public static Vector2Int AsInt(this Vector2 v) => new Vector2Int((int)v.x, (int)v.y);
 
@@ -391,6 +401,8 @@ namespace MarkusSecundus.Utils.Primitives
         /// <param name="v">Vector to be extracted</param>
         /// <returns>Vector with y field of <paramref name="v"/></returns>
         public static Vector2 _0y(this Vector2 v) => new Vector2(0, v.y);
+
+        public static Vector2 yx(this Vector2 v) => new Vector2(v.y, v.x);
 
         /// <summary>
         /// Extract just xy fields of 3D vector

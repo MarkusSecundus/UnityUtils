@@ -24,6 +24,7 @@ namespace MarkusSecundus.Utils.Geometry
         public static Vector3 GetRayPointWithLeastDistance(this ScaledRay self, Vector3 v)
             => self.GetPoint(self.GetRayPointWithLeastDistance_GetParameter(v));
 
+
         /// <summary>
         /// Get point going along the ray.
         /// </summary>

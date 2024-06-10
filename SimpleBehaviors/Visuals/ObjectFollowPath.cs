@@ -1,5 +1,6 @@
 using DG.Tweening;
 using MarkusSecundus.Utils.Assets._Scripts.Utils.Datastructs;
+using MarkusSecundus.Utils.Assets._Scripts.Utils.SimpleBehaviors.Visuals;
 using MarkusSecundus.Utils.Datastructs;
 using MarkusSecundus.Utils.Extensions;
 using MarkusSecundus.Utils.Primitives;
@@ -11,7 +12,7 @@ using UnityEngine.Events;
 
 namespace MarkusSecundus.Utils
 {
-    public class ObjectFollowPath : MonoBehaviour
+    public class ObjectFollowPath : MonoBehaviour, IStoppable
     {
         [System.Serializable]public struct PathSegment
         {
@@ -39,20 +40,20 @@ namespace MarkusSecundus.Utils
         };
 
         bool _isMoving = false;
+
+        public bool IsRunning => _isMoving;
+
         public void StartMovement()
         {
-            Debug.Log($"Requested movement start!", this);
             if(Op.post_assign(ref _isMoving, true)) return;
-            Debug.Log($"Initiated movement start!", this);
 
             var indices = _getIndexSupplier(_movementType);
             nextSegment(indices.GetEnumerator());
 
             void nextSegment(IEnumerator<int> indexSupplier)
             {
-                if (!indexSupplier.MoveNext())
+                if (!_isMoving || !indexSupplier.MoveNext())
                 {
-                    Debug.Log($"Finished movement!", this);
                     indexSupplier.Dispose();
                     _isMoving = false;
                     return;
@@ -62,13 +63,17 @@ namespace MarkusSecundus.Utils
                 var movementDuration = segment.ShouldOverrideMovementDuration 
                                         ? segment.MovementDurationOverride_seconds
                                         : distance / _movementSpeed;
-                Debug.Log($"Step {indexSupplier.Current} - duration: {movementDuration}", this);
                 transform.DOMove(segment.TargetPosition.position, movementDuration).SetEase(segment.Ease).OnComplete(() =>
                 {
                     segment.OnReached?.Invoke();
                     nextSegment(indexSupplier);
                 });
             }
+        }
+
+        public void Stop()
+        {
+            _isMoving = false;
         }
     }
 }

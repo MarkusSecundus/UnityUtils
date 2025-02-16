@@ -72,5 +72,11 @@ namespace MarkusSecundus.Utils.Behaviors.Cosmetics
                 });
             }
         }
+
+        public void EmitParticles(int count)
+        {
+            var particles = GetComponent<ParticleSystem>();
+            particles.Emit(count);
+        }
     }
 }

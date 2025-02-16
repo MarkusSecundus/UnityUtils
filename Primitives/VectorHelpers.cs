@@ -162,6 +162,21 @@ namespace MarkusSecundus.Utils.Primitives
     /// </summary>
     public static class VectorHelpers
     {
+        public const float FloatNormalizationDelta = 1E-05f;  //copypasted from decompiled builtin Vector3.Normalize()
+
+        /// <summary>
+        /// Normalizes the vector and when it's doing it, provides the magnitude as well.
+        /// </summary>
+        /// <param name="v">Vector to normalize</param>
+        /// <param name="magnitude">Computed magnitude of <paramref name="v"/></param>
+        /// <returns>Normalized variant of <paramref name="v"/></returns>
+        public static Vector2 Normalized(this Vector2 v, out float magnitude)
+        {
+            magnitude = v.magnitude;
+            if (magnitude > FloatNormalizationDelta)
+                return v / magnitude;
+            else return Vector2.zero;
+        }
         /// <summary>
         /// Normalizes the vector and when it's doing it, provides the magnitude as well.
         /// </summary>
@@ -171,7 +186,7 @@ namespace MarkusSecundus.Utils.Primitives
         public static Vector3 Normalized(this Vector3 v, out float magnitude)
         {
             magnitude = v.magnitude;
-            if (magnitude > 1E-05f) //copypasted from decompiled builtin Vector3.Normalize()
+            if (magnitude > FloatNormalizationDelta) //copypasted from decompiled builtin Vector3.Normalize()
                 return v / magnitude;
             else return Vector3.zero;
         }
@@ -294,6 +309,22 @@ namespace MarkusSecundus.Utils.Primitives
         /// <returns>Clamped result vector</returns>
         public static Vector3 ClampFields(this Vector3 self, Interval<Vector3> i)
             => new Vector3(Mathf.Clamp(self.x, i.Min.x, i.Max.x), Mathf.Clamp(self.y, i.Min.y, i.Max.y), Mathf.Clamp(self.z, i.Min.z, i.Max.z));
+
+
+        public static Vector2 ClampMagnitude(this Vector2 self, float minMagnitude, float maxMagnitude)
+        {
+            Vector2 normalized = self.Normalized(out float magnitude);
+            float clampedMagnitude = magnitude.Clamp(minMagnitude, maxMagnitude);
+            return (magnitude == clampedMagnitude) ? self : (normalized * clampedMagnitude); // return the original vector if no clamping is needed to prevent rounding errors
+        }
+
+        public static Vector3 ClampMagnitude(this Vector3 self, float minMagnitude, float maxMagnitude)
+        {
+            Vector3 normalized = self.Normalized(out float magnitude);
+            float clampedMagnitude = magnitude.Clamp(minMagnitude, maxMagnitude);
+            return (magnitude == clampedMagnitude) ? self : (normalized * clampedMagnitude); // return the original vector if no clamping is needed to prevent rounding errors
+        }
+        
 
 
 

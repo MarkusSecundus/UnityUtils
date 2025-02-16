@@ -2,7 +2,6 @@ using MarkusSecundus.Utils.Primitives;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using MarkusSecundus.Utils.Primitives;
 using System.Text;
 
 namespace MarkusSecundus.Utils.Geometry
@@ -38,7 +37,7 @@ namespace MarkusSecundus.Utils.Geometry
             if (t2 < t) (t, intersection) = (t2, intersection2);
             if (t3 < t) (t, intersection) = (t3, intersection3.yx());
             if (t4 < t) (t, intersection) = (t4, intersection4.yx());
-
+            
             return intersection;
 
             float computeIntersection(Vector2 origin, Vector2 direction, float beginX, out Vector2 intersection)

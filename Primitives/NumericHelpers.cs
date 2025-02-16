@@ -90,6 +90,9 @@ namespace MarkusSecundus.Utils.Primitives
         /// <returns><c>true</c> IFF distance between the two numbers is smaller than <paramref name="epsilon"/></returns>
         public static bool IsCloseTo(this float f, float g, float? epsilon = null) => (f - g).IsNegligible(epsilon);
 
+        public static float Clamp(this float f, float max, float min) => Mathf.Clamp(f, max, min);
+        public static float Clamp01(this float f) => Mathf.Clamp01(f);
+
         public static int Sqr(this int x) => x * x;
         public static float Sqr(this float x) => x * x;
         public static double Sqr(this double x) => x * x;

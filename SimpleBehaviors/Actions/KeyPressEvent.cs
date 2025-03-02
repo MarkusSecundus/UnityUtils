@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 namespace MarkusSecundus.Utils.Behaviors.Actions
 {
@@ -13,15 +14,22 @@ namespace MarkusSecundus.Utils.Behaviors.Actions
     /// </summary>
     public class KeyPressEvent : MonoBehaviour
     {
-        public KeyInputSource InputSource;
+        public IKeyInputSource InputSource { get => _inputSource ?? __inputSource; set => _inputSource = value; }
+        IKeyInputSource _inputSource;
+        [SerializeField, FormerlySerializedAs("InputSource")] KeyInputSource __inputSource;
         /// <summary>
         /// Map of events to be invoked for specific keys being pressed
         /// </summary>
         public SerializableDictionary<KeyCode, UnityEvent> Events;
 
+        private void Start()
+        {
+            if (__inputSource.IsNil()) _inputSource = IKeyInputSource.Get(this);
+        }
+
         void Update()
         {
-            if (InputSource)
+            if (InputSource.IsNotNil())
             {
                 if (InputSource.IsAnyKeyDown)
                 {

@@ -13,6 +13,8 @@ namespace MarkusSecundus.Utils.Input
         public bool IsAnyKeyUp { get; }
         public bool IsAnyKeyDown { get; }
         public bool IsAnyKeyPressed { get; }
+
+        public static IKeyInputSource Get(Component o) => o.GetComponentInParent<IKeyInputSource>();
     }
     public abstract class KeyInputSource : MonoBehaviour, IKeyInputSource
     {

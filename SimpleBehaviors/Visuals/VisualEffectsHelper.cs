@@ -3,6 +3,7 @@ using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
 using MarkusSecundus.Utils;
 using MarkusSecundus.Utils.Datastructs;
+using PlasticGui;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,7 +24,7 @@ namespace MarkusSecundus.Utils.Behaviors.Cosmetics
         /// <summary>
         /// Parameters for the blinking effect
         /// </summary>
-        [SerializeField] BlinkingArgs Blinking;
+        [SerializeField] BlinkingArgs Blinking = BlinkingArgs.Default;
         /// <summary>
         /// Parameters for the blinking effect
         /// </summary>
@@ -42,6 +43,8 @@ namespace MarkusSecundus.Utils.Behaviors.Cosmetics
             /// Color with which the objects blink
             /// </summary>
             public Color Color;
+
+            public static BlinkingArgs Default => new BlinkingArgs { TotalDuration = 0.0f, FadeTime = 0.0f, Color = Color.magenta };
         }
 
         private class InternalBlinkingInfo
@@ -49,7 +52,7 @@ namespace MarkusSecundus.Utils.Behaviors.Cosmetics
             public TweenerCore<Color, Color, ColorOptions> CurrentlyPlaying;
             public Color OriginalColor;
         }
-        private DefaultValDict<Renderer, InternalBlinkingInfo> rendererMetadata = new DefaultValDict<Renderer, InternalBlinkingInfo>(r => new InternalBlinkingInfo());
+        private DefaultValDict<Renderer, InternalBlinkingInfo> blinkingRendererMetadata = new DefaultValDict<Renderer, InternalBlinkingInfo>(r => new InternalBlinkingInfo());
 
         /// <summary>
         /// Start the blinking event. Parameters are obtained from <see cref="Blinking"/>
@@ -58,7 +61,7 @@ namespace MarkusSecundus.Utils.Behaviors.Cosmetics
         {
             foreach (var renderer in AffectedRenderers)
             {
-                var data = rendererMetadata[renderer];
+                var data = blinkingRendererMetadata[renderer];
                 var mat = renderer.material;
                 if (data.CurrentlyPlaying == null)
                 {
@@ -70,6 +73,52 @@ namespace MarkusSecundus.Utils.Behaviors.Cosmetics
                     data.CurrentlyPlaying = mat.DOColor(data.OriginalColor, Blinking.FadeTime)
                             .OnComplete(() => data.CurrentlyPlaying = null);
                 });
+            }
+        }
+
+        [System.Serializable]
+        public struct BlinkingOnOffArgs
+        {
+            public GameObject[] AffectedObjects;
+
+            public int BlinksCount;
+            public float OnDuration_seconds;
+            public float OffDuration_seconds;
+            public float BuildupTime_seconds;
+            public UnityEvent OnBlinkingFinished;
+        }
+
+
+        [SerializeField] BlinkingOnOffArgs BlinkingOnOff;
+
+        private Dictionary<GameObject, Coroutine> blinkingOnOffRendererMetadata = new ();
+
+        public void BlinkOnOff()
+        {
+            foreach(var obj in BlinkingOnOff.AffectedObjects)
+            {
+                if(blinkingOnOffRendererMetadata.TryGetValue(obj, out var coroutine))
+                {
+                    this.StopCoroutine(coroutine);
+                }
+                Coroutine blinker = StartCoroutine(impl(obj));
+            }
+
+            IEnumerator impl(GameObject obj)
+            {
+                bool isActive = obj.activeSelf;
+                if (BlinkingOnOff.BuildupTime_seconds > 0f) 
+                    yield return new WaitForSeconds(BlinkingOnOff.BuildupTime_seconds);
+                for(int t=BlinkingOnOff.BlinksCount*2 - 1; t --> 0;)
+                {
+                    obj.SetActive(isActive = !isActive);
+                    yield return new WaitForSeconds(isActive ? BlinkingOnOff.OnDuration_seconds : BlinkingOnOff.OffDuration_seconds);
+                }
+                obj.SetActive(isActive = !isActive);
+
+                blinkingOnOffRendererMetadata.Remove(obj);
+                if (blinkingOnOffRendererMetadata.Count <= 0)
+                    BlinkingOnOff.OnBlinkingFinished.Invoke();
             }
         }
 

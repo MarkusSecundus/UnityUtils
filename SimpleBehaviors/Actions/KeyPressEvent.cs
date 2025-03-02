@@ -14,9 +14,9 @@ namespace MarkusSecundus.Utils.Behaviors.Actions
     /// </summary>
     public class KeyPressEvent : MonoBehaviour
     {
-        public IKeyInputSource InputSource { get => _inputSource ?? __inputSource; set => _inputSource = value; }
-        IKeyInputSource _inputSource;
-        [SerializeField, FormerlySerializedAs("InputSource")] KeyInputSource __inputSource;
+        public IKeyInputSource InputSource { get => _inputSource_field ?? _inputSource; set => _inputSource_field = value; }
+        IKeyInputSource _inputSource_field;
+        [SerializeField, FormerlySerializedAs("InputSource")] KeyInputSource _inputSource;
         /// <summary>
         /// Map of events to be invoked for specific keys being pressed
         /// </summary>
@@ -24,7 +24,7 @@ namespace MarkusSecundus.Utils.Behaviors.Actions
 
         private void Start()
         {
-            if (__inputSource.IsNil()) _inputSource = IKeyInputSource.Get(this);
+            if (_inputSource.IsNil()) _inputSource_field = IKeyInputSource.Get(this);
         }
 
         void Update()

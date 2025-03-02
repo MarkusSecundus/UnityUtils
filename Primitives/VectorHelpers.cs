@@ -162,6 +162,12 @@ namespace MarkusSecundus.Utils.Primitives
     /// </summary>
     public static class VectorHelpers
     {
+        public static int ToIndex(this VectorField.FieldType self) => VectorField.FieldType.X <= self && self <= VectorField.FieldType.Z
+                                                                            ? (int)(self - VectorField.FieldType.X)
+                                                                            : VectorField.FieldType.R <= self && self <= VectorField.FieldType.A
+                                                                                ? (int)(self - VectorField.FieldType.R)
+                                                                                : throw new System.ArgumentOutOfRangeException($"Cannot convert {self} to index!");
+
         public const float FloatNormalizationDelta = 1E-05f;  //copypasted from decompiled builtin Vector3.Normalize()
 
         /// <summary>

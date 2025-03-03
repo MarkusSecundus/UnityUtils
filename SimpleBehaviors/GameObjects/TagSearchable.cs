@@ -1,4 +1,5 @@
 ﻿using MarkusSecundus.Utils.Datastructs;
+using MarkusSecundus.Utils.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,11 +25,32 @@ namespace MarkusSecundus.Utils.Behaviors.GameObjects
             }
             return null;
         }
+        public static TComponent FindByTag<TComponent>(string tag) where TComponent : Component
+        {
+            if (!_values.TryGetValue(tag, out var list) || list.IsNullOrEmpty())
+                return null;
+            for (; list.Count > 0;)
+            {
+                if (list[list.Count - 1])
+                {
+                    var ret = list[list.Count - 1].GetComponent<TComponent>();
+                    if (ret) return ret;
+                }
+                else list.RemoveAt(list.Count - 1);
+            }
+            return null;
+        }
+
         public static IEnumerable<GameObject> FindAllByTag(string tag)
         {
             if (!_values.TryGetValue(tag, out var list) || list.IsNullOrEmpty())
                 return null;
             return list;
+        }
+
+        public static IEnumerable<TComponent> FindAllByTag<TComponent>(string tag) where TComponent : Component
+        {
+            return FindAllByTag(tag)?.Select(o => o.GetComponents<TComponent>())?.Flatten();
         }
 
         protected virtual void Awake()

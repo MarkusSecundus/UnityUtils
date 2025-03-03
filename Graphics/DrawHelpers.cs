@@ -1,3 +1,4 @@
+using MarkusSecundus.Utils.Extensions;
 using MarkusSecundus.Utils.Geometry;
 using MarkusSecundus.Utils.Primitives;
 using UnityEngine;
@@ -134,6 +135,19 @@ namespace MarkusSecundus.Utils.Graphics
             {
                 drawLine(bs.GetBasedVector(a) + center, bs.GetBasedVector(b) + center);
             }
+        }
+
+        public static void DrawLineSquare(Vector2 dimsXZ, Transform transform, LineDrawer<Vector3> drawLine)
+        {
+
+            Vector2 half = dimsXZ * 0.5f;
+            Vector3 leftDown = transform.LocalToGlobal(-half.x0y()), leftUp = transform.LocalToGlobal(new Vector3(-half.x, 0, half.y)), rightDown = transform.LocalToGlobal(new Vector3(half.x, 0, -half.y)), rightUp = transform.LocalToGlobal(half.x0y());
+            drawLine(leftDown, leftUp);
+            drawLine(leftUp, rightUp);
+            drawLine(rightUp, rightDown);
+            drawLine(rightDown, leftDown);
+            drawLine(rightUp, leftDown);
+            drawLine(rightDown, leftUp);
         }
     }
 }

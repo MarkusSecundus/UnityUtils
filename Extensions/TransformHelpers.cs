@@ -36,6 +36,11 @@ namespace MarkusSecundus.Utils.Extensions
             return self.position = relativeTo.LocalToGlobal(position);
         }
 
+        public static void SnapWithPivot(this Transform self, Transform pivot, Vector3 targetPosition)
+        {
+            self.position += (targetPosition - pivot.position);
+        }
+
         /// <summary>
         /// Transform a point from local space to world space. Same as <see cref="Transform.TransformPoint(Vector3)"/> but with more readable name.
         /// </summary>

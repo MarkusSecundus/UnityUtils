@@ -63,6 +63,11 @@ namespace MarkusSecundus.Utils.Datastructs
                 foreach (var i in self) yield return i;
         }
 
+        public static IEnumerable<T> Flatten<T>(this IEnumerable<IEnumerable<T>> self)
+        {
+            foreach (var it in self) foreach (var e in it) yield return e;
+        }
+
         public static IEnumerable<T> Chain<T>(this IEnumerable<T> self, params IEnumerable<T>[] others)
         {
             foreach (var e in self) yield return e;

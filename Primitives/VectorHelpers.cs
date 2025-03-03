@@ -426,6 +426,16 @@ namespace MarkusSecundus.Utils.Primitives
         public static Vector3Int AsInt(this Vector3 v) => new Vector3Int((int)v.x, (int)v.y, (int)v.z);
         public static Vector2Int AsInt(this Vector2 v) => new Vector2Int((int)v.x, (int)v.y);
 
+
+        public static IEnumerable<Vector2Int> IterateValuesInclusive(this Interval<Vector2Int> self)
+        {
+            for (long y = self.Min.y; y <= self.Max.y; ++y) //longs just to make sure we don't infinite-cycle on self.Max.x|y equal to int.MaxValue
+                for (long x = self.Min.x; x <= self.Max.x; ++x)
+                    yield return new Vector2Int((int)x, (int)y);
+        }
+
+
+
         /// <summary>
         /// Extract just x field of vector
         /// </summary>

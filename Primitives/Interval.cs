@@ -1,17 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace MarkusSecundus.Utils.Primitives
 {
     public static class Interval
     {
-        public static Interval<Vector3> Make(Vector3 a, Vector3 b) => new Interval<Vector3>(new Vector3(Mathf.Min(a.x, b.x), Mathf.Min(a.y, b.y), Mathf.Min(a.z, b.z)),new Vector3(Mathf.Max(a.x, b.x), Mathf.Max(a.y, b.y), Mathf.Max(a.z, b.z)));
+        public static Interval<Vector3> Make(Vector3 a, Vector3 b) => new Interval<Vector3>(a.Min(b), a.Max(b));
+
+        public static Interval<Vector2Int> Make(Vector2Int a, Vector2Int b) => new Interval<Vector2Int>(a.Min(b), a.Max(b));
 
         public static float Clamp(this float f, Interval<float> i) => Mathf.Clamp(f, i.Min, i.Max);
 
         public static bool Contains(this Interval<float> i, float f) => i.Min <= f && f < i.Max;
         public static bool Contains(this Interval<int> i, int t) => i.Min <= t && t < i.Max;
+
+        public static Interval<Vector3> Enlarge(this Interval<Vector3> a , Interval<Vector3> b) => new Interval<Vector3>(new Vector3(Mathf.Min(a.Min.x, b.Min.x), Mathf.Min(a.Min.y, b.Min.y), Mathf.Min(a.Min.z, b.Min.z)), new Vector3(Mathf.Max(a.Max.x, b.Max.x), Mathf.Max(a.Max.y, b.Max.y), Mathf.Max(a.Max.z, b.Max.z)));
+        public static Interval<Vector2Int> Enlarge(this Interval<Vector2Int> a , Interval<Vector2Int> b) => new Interval<Vector2Int>(new Vector2Int(Mathf.Min(a.Min.x, b.Min.x), Mathf.Min(a.Min.y, b.Min.y)), new Vector2Int(Mathf.Max(a.Max.x, b.Max.x), Mathf.Max(a.Max.y, b.Max.y)));
     }
 
     /// <summary>

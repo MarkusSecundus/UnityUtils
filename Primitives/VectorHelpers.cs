@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -27,13 +28,19 @@ namespace MarkusSecundus.Utils.Primitives
         /// </summary>
         /// <param name="type">Type of reference <c>this</c> will represent</param>
         /// <exception cref="System.ArgumentException">if <paramref name="type"/>is <see cref="FieldType.UseProvidedValue"/></exception>
-        public VectorField(FieldType type)
+        public VectorField(FieldType type, float value = 1f)
         {
             if (type == FieldType.UseProvidedValue)
                 throw new System.ArgumentException($"To use the type {nameof(FieldType.UseProvidedValue)}, use the other constructor that provides the value!");
-            (Value, Field) = (default, type);
+            (Value, Field) = (value, type);
         }
         public VectorField(Vector3SerializableSwizzle.SwizzleOption type): this((FieldType)type) { }
+
+        public static VectorField operator -(VectorField f) => new VectorField(f.Field, -f.Value);
+        public static VectorField operator +(VectorField f) => f;
+        public static VectorField operator *(VectorField f, float multiplier) => new VectorField(f.Field, f.Value * multiplier);
+        public static VectorField operator *(float multiplier, VectorField f) => new VectorField(f.Field, multiplier * f.Value);
+        public static VectorField operator /(VectorField f, float divider) => new VectorField(f.Field, f.Value / divider);
 
         /// <summary>
         /// Types of fields the FieldType can refer
@@ -235,12 +242,121 @@ namespace MarkusSecundus.Utils.Primitives
             {
                 VectorField.FieldType.UseOriginal => original,
                 VectorField.FieldType.UseProvidedValue => field.Value,
-                VectorField.FieldType.X => self.x,
-                VectorField.FieldType.Y => self.y,
-                VectorField.FieldType.Z => self.z,
-                _ => throw new System.ArgumentException($"Provided ")
+                VectorField.FieldType.X => self.x * field.Value,
+                VectorField.FieldType.Y => self.y * field.Value,
+                VectorField.FieldType.Z => self.z * field.Value,
+                _ => throw new System.ArgumentException($"Invalid argument: {field}")
             };
             return new Vector3(FieldValue(x, self.x), FieldValue(y, self.y), FieldValue(z, self.z));
+        }
+        /// <summary>
+        /// Replace certain components of the provided vector.
+        /// 
+        /// <para>Fields can be replaced by provided value, nothing or even other fields of the original vector.</para>
+        /// </summary>
+        /// <param name="self">Base vector value</param>
+        /// <param name="x">Instruction for field X replacement</param>
+        /// <param name="y">Instruction for field Y replacement</param>
+        /// <param name="z">Instruction for field Z replacement</param>
+        /// <returns>Result vector</returns>
+        public static Vector3Int With(this Vector3Int self, VectorField x = default, VectorField y = default, VectorField z = default)
+        {
+            int FieldValue(VectorField field, float original) => field.Field switch
+            {
+                VectorField.FieldType.UseOriginal => (int)(original),
+                VectorField.FieldType.UseProvidedValue => (int)field.Value,
+                VectorField.FieldType.X => (int)(self.x * field.Value),
+                VectorField.FieldType.Y => (int)(self.y * field.Value),
+                VectorField.FieldType.Z => (int)(self.z * field.Value),
+                _ => throw new System.ArgumentException($"Invalid argument: {field}")
+            };
+            return new Vector3Int(FieldValue(x, self.x), FieldValue(y, self.y), FieldValue(z, self.z));
+        }
+        /// <summary>
+        /// Replace certain components of the provided vector.
+        /// 
+        /// <para>Fields can be replaced by provided value, nothing or even other fields of the original vector.</para>
+        /// </summary>
+        /// <param name="self">Base vector value</param>
+        /// <param name="x">Instruction for field X replacement</param>
+        /// <param name="y">Instruction for field Y replacement</param>
+        /// <returns>Result vector</returns>
+        public static Vector2 With(this Vector2 self, VectorField x = default, VectorField y = default)
+        {
+            float FieldValue(VectorField field, float original) => field.Field switch
+            {
+                VectorField.FieldType.UseOriginal => original,
+                VectorField.FieldType.UseProvidedValue => field.Value,
+                VectorField.FieldType.X => self.x * field.Value,
+                VectorField.FieldType.Y => self.y * field.Value,
+                _ => throw new System.ArgumentException($"Invalid argument: {field}")
+            };
+            return new Vector2(FieldValue(x, self.x), FieldValue(y, self.y));
+        }
+        /// <summary>
+        /// Replace certain components of the provided vector.
+        /// 
+        /// <para>Fields can be replaced by provided value, nothing or even other fields of the original vector.</para>
+        /// </summary>
+        /// <param name="self">Base vector value</param>
+        /// <param name="x">Instruction for field X replacement</param>
+        /// <param name="y">Instruction for field Y replacement</param>
+        /// <param name="z">Instruction for field Z replacement</param>
+        /// <returns>Result vector</returns>
+        public static Vector3 With(this Vector2 self, VectorField x = default, VectorField y = default, VectorField z = default)
+        {
+            float FieldValue(VectorField field, float original) => field.Field switch
+            {
+                VectorField.FieldType.UseOriginal => original,
+                VectorField.FieldType.UseProvidedValue => field.Value,
+                VectorField.FieldType.X => self.x * field.Value,
+                VectorField.FieldType.Y => self.y * field.Value,
+                _ => throw new System.ArgumentException($"Invalid argument: {field}")
+            };
+            return new Vector3(FieldValue(x, self.x), FieldValue(y, self.y), FieldValue(z, 0));
+        }
+        /// <summary>
+        /// Replace certain components of the provided vector.
+        /// 
+        /// <para>Fields can be replaced by provided value, nothing or even other fields of the original vector.</para>
+        /// </summary>
+        /// <param name="self">Base vector value</param>
+        /// <param name="x">Instruction for field X replacement</param>
+        /// <param name="y">Instruction for field Y replacement</param>
+        /// <returns>Result vector</returns>
+        public static Vector2Int With(this Vector2Int self, VectorField x = default, VectorField y = default)
+        {
+            int FieldValue(VectorField field, float original) => field.Field switch
+            {
+                VectorField.FieldType.UseOriginal => (int)(original),
+                VectorField.FieldType.UseProvidedValue => (int)field.Value,
+                VectorField.FieldType.X => (int)(self.x * field.Value),
+                VectorField.FieldType.Y => (int)(self.y * field.Value),
+                _ => throw new System.ArgumentException($"Invalid argument: {field}")
+            };
+            return new Vector2Int(FieldValue(x, self.x), FieldValue(y, self.y));
+        }
+        /// <summary>
+        /// Replace certain components of the provided vector.
+        /// 
+        /// <para>Fields can be replaced by provided value, nothing or even other fields of the original vector.</para>
+        /// </summary>
+        /// <param name="self">Base vector value</param>
+        /// <param name="x">Instruction for field X replacement</param>
+        /// <param name="y">Instruction for field Y replacement</param>
+        /// <param name="z">Instruction for field Z replacement</param>
+        /// <returns>Result vector</returns>
+        public static Vector3Int With(this Vector2Int self, VectorField x = default, VectorField y = default, VectorField z = default)
+        {
+            int FieldValue(VectorField field, float original) => field.Field switch
+            {
+                VectorField.FieldType.UseOriginal => (int)(original),
+                VectorField.FieldType.UseProvidedValue => (int)field.Value,
+                VectorField.FieldType.X => (int)(self.x * field.Value),
+                VectorField.FieldType.Y => (int)(self.y * field.Value),
+                _ => throw new System.ArgumentException($"Invalid argument: {field}")
+            };
+            return new Vector3Int(FieldValue(x, self.x), FieldValue(y, self.y), FieldValue(z, 0));
         }
         /// <summary>
         /// Replace certain components of the provided color.
@@ -259,10 +375,10 @@ namespace MarkusSecundus.Utils.Primitives
             {
                 VectorField.FieldType.UseOriginal => original,
                 VectorField.FieldType.UseProvidedValue => field.Value,
-                VectorField.FieldType.R => self.r,
-                VectorField.FieldType.G => self.g,
-                VectorField.FieldType.B => self.b,
-                VectorField.FieldType.A => self.a,
+                VectorField.FieldType.R => self.r * field.Value,
+                VectorField.FieldType.G => self.g * field.Value,
+                VectorField.FieldType.B => self.b * field.Value,
+                VectorField.FieldType.A => self.a * field.Value,
                 _ => throw new System.ArgumentException($"Provided ")
             };
             return new Color(FieldValue(r, self.r), FieldValue(g, self.g), FieldValue(b, self.b), FieldValue(a, self.a));
@@ -358,7 +474,14 @@ namespace MarkusSecundus.Utils.Primitives
             //}
         }
 
-
+        public static Vector2 Min(this Vector2 a, Vector2 b) => new Vector2(Mathf.Min(a.x, b.x), Mathf.Min(a.y, b.y));
+        public static Vector3 Min(this Vector3 a, Vector3 b) => new Vector3(Mathf.Min(a.x, b.x), Mathf.Min(a.y, b.y), Mathf.Min(a.z, b.z));
+        public static Vector2 Max(this Vector2 a, Vector2 b) => new Vector2(Mathf.Max(a.x, b.x), Mathf.Max(a.y, b.y));
+        public static Vector3 Max(this Vector3 a, Vector3 b) => new Vector3(Mathf.Max(a.x, b.x), Mathf.Max(a.y, b.y), Mathf.Max(a.z, b.z));
+        public static Vector2Int Min(this Vector2Int a, Vector2Int b) => new Vector2Int(Mathf.Min(a.x, b.x), Mathf.Min(a.y, b.y));
+        public static Vector3Int Min(this Vector3Int a, Vector3Int b) => new Vector3Int(Mathf.Min(a.x, b.x), Mathf.Min(a.y, b.y), Mathf.Min(a.z, b.z));
+        public static Vector2Int Max(this Vector2Int a, Vector2Int b) => new Vector2Int(Mathf.Max(a.x, b.x), Mathf.Max(a.y, b.y));
+        public static Vector3Int Max(this Vector3Int a, Vector3Int b) => new Vector3Int(Mathf.Max(a.x, b.x), Mathf.Max(a.y, b.y), Mathf.Max(a.z, b.z));
 
         /// <summary>
         /// Fluent shortcut for <see cref="Vector3.Distance(Vector3, Vector3)"/>

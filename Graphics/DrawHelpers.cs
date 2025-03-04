@@ -137,17 +137,42 @@ namespace MarkusSecundus.Utils.Graphics
             }
         }
 
-        public static void DrawLineSquare(Vector2 dimsXZ, Transform transform, LineDrawer<Vector3> drawLine)
+        public static void DrawWireSquare(Vector2 minLocal, Vector2 maxLocal, Transform transform, LineDrawer<Vector3> drawLine, bool withCross = true)
+        {
+
+            DrawWireQuad(
+                transform.LocalToGlobal(new Vector3(minLocal.x, 0, minLocal.y)),
+                transform.LocalToGlobal(new Vector3(-minLocal.x, 0, minLocal.y)),
+                transform.LocalToGlobal(new Vector3(-minLocal.x, 0, -minLocal.y)),
+                transform.LocalToGlobal(new Vector3(minLocal.x, 0, -minLocal.y)),
+                drawLine, withCross
+            );
+        }
+        
+        public static void DrawWireSquare(Vector2 dimsXZ, Transform transform, LineDrawer<Vector3> drawLine, bool withCross = true)
         {
 
             Vector2 half = dimsXZ * 0.5f;
-            Vector3 leftDown = transform.LocalToGlobal(-half.x0y()), leftUp = transform.LocalToGlobal(new Vector3(-half.x, 0, half.y)), rightDown = transform.LocalToGlobal(new Vector3(half.x, 0, -half.y)), rightUp = transform.LocalToGlobal(half.x0y());
-            drawLine(leftDown, leftUp);
-            drawLine(leftUp, rightUp);
-            drawLine(rightUp, rightDown);
-            drawLine(rightDown, leftDown);
-            drawLine(rightUp, leftDown);
-            drawLine(rightDown, leftUp);
+            DrawWireQuad(
+                transform.LocalToGlobal(-half.x0y()),
+                transform.LocalToGlobal(new Vector3(-half.x, 0, half.y)),
+                transform.LocalToGlobal(new Vector3(half.x, 0, -half.y)),
+                transform.LocalToGlobal(half.x0y()),
+                drawLine, withCross
+            );
+        }
+
+        public static void DrawWireQuad(Vector3 a, Vector3 b, Vector3 c, Vector3 d, LineDrawer<Vector3> drawLine, bool withCross = true)
+        {
+            drawLine(a, b);
+            drawLine(b, c);
+            drawLine(c, d);
+            drawLine(d, a);
+            if (withCross)
+            {
+                drawLine(a, c);
+                drawLine(b, d);
+            }
         }
     }
 }

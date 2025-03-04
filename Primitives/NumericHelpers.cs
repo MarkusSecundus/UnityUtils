@@ -9,6 +9,13 @@ namespace MarkusSecundus.Utils.Primitives
     /// </summary>
     public static class NumericHelpers
     {
+        public static int DivideWithRemainder(this float f, float div, out float remainder)
+        {
+            double ret = System.Math.Floor((double)f / (double)div);
+            remainder = (float)((double)f - (ret * (double)div));
+            return (int)ret;
+        }
+
         /// <summary>
         /// Computes division remainder for floats.
         /// 

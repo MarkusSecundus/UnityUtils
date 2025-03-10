@@ -41,7 +41,7 @@ namespace MarkusSecundus.Utils.Procgen.Chunking
         [SerializeField]int _seed=-1;
 
         System.Random _rand;
-        public System.Random Rand => _rand ?? (_seed == -1 ? new System.Random() : new System.Random(_seed));
+        public System.Random Rand => _rand ??= (_seed == -1 ? new System.Random() : new System.Random(_seed));
 
         private void Start()
         {

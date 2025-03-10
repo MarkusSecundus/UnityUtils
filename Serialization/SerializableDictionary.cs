@@ -54,6 +54,10 @@ namespace MarkusSecundus.Utils.Serialization
         /// </summary>
         public IReadOnlyDictionary<TKey, TValue> Values { get => _values; set { values = value.Select(kv => new TEntry { Key = kv.Key, Value = kv.Value }).ToArray(); FillDictionaryValues(_values); } }
 
+        public TValue this[TKey key] => Values[key];
+
+        public bool TryGetValue(TKey key, out TValue value) => Values.TryGetValue(key, out value);
+
         /// <summary>
         /// Does nothing
         /// </summary>

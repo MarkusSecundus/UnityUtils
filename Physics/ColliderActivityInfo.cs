@@ -5,7 +5,13 @@ using UnityEngine;
 
 namespace MarkusSecundus.Utils.Physics
 {
-    public struct ColliderActivityInfo<TElement> where TElement : class
+    public interface IColliderActivityInfo
+    {
+        public void Enter(Collider other);
+        public void Exit(Collider other);
+    }
+
+    public class ColliderActivityInfo<TElement> : IColliderActivityInfo where TElement : class
     {
         public Func<Collider, TElement> Extractor;
         public Func<TElement, bool> Validator;
@@ -25,5 +31,9 @@ namespace MarkusSecundus.Utils.Physics
             var target = Extractor(other);
             return target.IsNotNil() && Active.Remove(target) ? target : default;
         }
+
+        void IColliderActivityInfo.Enter(Collider other) => Enter(other);
+
+        void IColliderActivityInfo.Exit(Collider other) => Exit(other);
     }
 }

@@ -1,6 +1,7 @@
 using MarkusSecundus.Utils.Extensions;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 
 namespace MarkusSecundus.Utils.Datastructs
@@ -10,6 +11,8 @@ namespace MarkusSecundus.Utils.Datastructs
     /// </summary>
     public static class CollectionHelpers
     {
+        public static bool IsEmpty<T>(this IReadOnlyCollection<T> self) => self.Count <= 0;
+
         /// <summary>
         /// Yield given number of results obtained from a given supplier
         /// </summary>

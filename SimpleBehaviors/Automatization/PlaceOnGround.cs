@@ -5,6 +5,8 @@ using UnityEngine;
 
 namespace MarkusSecundus.Utils
 {
+
+    [DefaultExecutionOrder(-10)]
     public class PlaceOnGround : MonoBehaviour
     {
         [SerializeField] Transform _pivot;

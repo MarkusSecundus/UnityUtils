@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MarkusSecundus.Utils.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -29,9 +30,9 @@ namespace MarkusSecundus.Utils.Physics
         {
             _listeners ??= new();
             _listeners.Add(listener);
-            if (UseTrigger)
+            if (UseTrigger && _triggers.IsNotNil())
                 foreach (var t in _triggers) listener.Enter(t);
-            if (UseCollision)
+            if (UseCollision && _collisions.IsNotNil())
                 foreach (var c in _collisions) listener.Enter(c);
         }
         public bool UnregisterListener(IColliderActivityInfo listener) => _listeners?.Remove(listener) == true;

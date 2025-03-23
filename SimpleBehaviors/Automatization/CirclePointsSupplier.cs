@@ -90,7 +90,7 @@ namespace MarkusSecundus.Utils.Behaviors.Automatization
             var randomAngle = rand.NextFloat(minAngle_radians, maxAngle_radians);
             var ret = transform.LocalToGlobal(SphereGeometryHelpers.GetPointOnCircle(randomAngle) * rand.NextFloat(0f, 1f));
             var fix =  _navmeshFix(ret);
-            Debug.Log($"Generated position: {randomAngle}.. {ret} -> {fix}", this);
+            //Debug.Log($"Generated position: {randomAngle}.. {ret} -> {fix}", this);
             return fix;
         }
         Vector3 _navmeshFix(Vector3 v)

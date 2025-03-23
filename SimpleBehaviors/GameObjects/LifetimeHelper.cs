@@ -36,5 +36,10 @@ namespace MarkusSecundus.Utils.Behaviors.GameObjects
         {
             HelperSingleton.Instance.InvokeWithDelay(() => { if (gameObject) Destroy(gameObject); }, null);
         }
+
+        public void SwitchActiveness()
+        {
+            this.gameObject.SetActive(!gameObject.activeSelf);
+        }
     }
 }

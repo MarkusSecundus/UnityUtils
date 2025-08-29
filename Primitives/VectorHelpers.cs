@@ -111,6 +111,8 @@ namespace MarkusSecundus.Utils.Primitives
         {
             KeepOriginal = VectorField.FieldType.UseOriginal, X = VectorField.FieldType.X, Y = VectorField.FieldType.Y, Z = VectorField.FieldType.Z
         }
+
+        public static Vector3SerializableSwizzle Default = new Vector3SerializableSwizzle();
     }
 
     /// <summary>
@@ -383,6 +385,7 @@ namespace MarkusSecundus.Utils.Primitives
             };
             return new Color(FieldValue(r, self.r), FieldValue(g, self.g), FieldValue(b, self.b), FieldValue(a, self.a));
         }
+        public static Color WithAlpha(this Color self, float alpha) => new Color(self.r, self.g, self.b, alpha);
 
         public static Vector3 With(this Vector3 self, Vector3SerializableSwizzle swizzle) => self.With(x: new VectorField(swizzle.X),y: new VectorField(swizzle.Y),z: new VectorField(swizzle.Z));
 
@@ -439,6 +442,7 @@ namespace MarkusSecundus.Utils.Primitives
             float clampedMagnitude = magnitude.Clamp(minMagnitude, maxMagnitude);
             return (magnitude == clampedMagnitude) ? self : (normalized * clampedMagnitude); // return the original vector if no clamping is needed to prevent rounding errors
         }
+        public static Vector2 ClampMagnitude(this Vector2 self, Interval<float> magnitudeRange) => self.ClampMagnitude(magnitudeRange.Min, magnitudeRange.Max);
 
         public static Vector3 ClampMagnitude(this Vector3 self, float minMagnitude, float maxMagnitude)
         {
@@ -446,7 +450,8 @@ namespace MarkusSecundus.Utils.Primitives
             float clampedMagnitude = magnitude.Clamp(minMagnitude, maxMagnitude);
             return (magnitude == clampedMagnitude) ? self : (normalized * clampedMagnitude); // return the original vector if no clamping is needed to prevent rounding errors
         }
-        
+        public static Vector3 ClampMagnitude(this Vector3 self, Interval<float> magnitudeRange) => self.ClampMagnitude(magnitudeRange.Min, magnitudeRange.Max);
+
 
 
 
@@ -487,7 +492,9 @@ namespace MarkusSecundus.Utils.Primitives
         /// Fluent shortcut for <see cref="Vector3.Distance(Vector3, Vector3)"/>
         /// </summary>
         /// <returns>Distance between the two vectors</returns>
+        public static float Distance(this Vector2 self, Vector2 b) => Vector2.Distance(self, b);
         public static float Distance(this Vector3 self, Vector3 b) => Vector3.Distance(self, b);
+        public static float DistanceSqr(this Vector2 self, Vector2 b) => Vector2.SqrMagnitude(self - b);
         public static float DistanceSqr(this Vector3 self, Vector3 b) => Vector3.SqrMagnitude(self - b);
 
         /// <summary>
@@ -548,7 +555,6 @@ namespace MarkusSecundus.Utils.Primitives
 
         public static Vector3Int AsInt(this Vector3 v) => new Vector3Int((int)v.x, (int)v.y, (int)v.z);
         public static Vector2Int AsInt(this Vector2 v) => new Vector2Int((int)v.x, (int)v.y);
-
 
         public static IEnumerable<Vector2Int> IterateValuesInclusive(this Interval<Vector2Int> self)
         {

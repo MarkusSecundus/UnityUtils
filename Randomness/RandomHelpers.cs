@@ -92,6 +92,7 @@ namespace MarkusSecundus.Utils.Randomness
         /// <param name="max">Max value, inclusive</param>
         /// <returns>Random value</returns>
         public static float NextFloat(this System.Random self, float min, float max) => (float)(min + self.NextDouble() * (max - min));
+        public static float NextFloat(this System.Random self) => (float)self.NextDouble();
         public static double NextDouble(this System.Random self, double min, double max) => (double)(min + self.NextDouble() * (max - min));
 
         /// <summary>
@@ -113,6 +114,12 @@ namespace MarkusSecundus.Utils.Randomness
         /// <returns>Random value</returns>
         public static Vector2 NextVector2(this System.Random self, Vector2 min, Vector2 max)
             => new Vector2(self.NextFloat(min.x, max.x), self.NextFloat(min.y, max.y));
+
+        public static Vector2 NextUnitVector2(this System.Random self)
+        {
+            float angle = self.NextFloat(0f, Mathf.PI * 2f);
+            return new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
+        }
 
         /// <summary>
         /// Generate random <see cref="Vector2"/>

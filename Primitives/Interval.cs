@@ -18,6 +18,8 @@ namespace MarkusSecundus.Utils.Primitives
 
         public static Interval<Vector3> Enlarge(this Interval<Vector3> a , Interval<Vector3> b) => new Interval<Vector3>(new Vector3(Mathf.Min(a.Min.x, b.Min.x), Mathf.Min(a.Min.y, b.Min.y), Mathf.Min(a.Min.z, b.Min.z)), new Vector3(Mathf.Max(a.Max.x, b.Max.x), Mathf.Max(a.Max.y, b.Max.y), Mathf.Max(a.Max.z, b.Max.z)));
         public static Interval<Vector2Int> Enlarge(this Interval<Vector2Int> a , Interval<Vector2Int> b) => new Interval<Vector2Int>(new Vector2Int(Mathf.Min(a.Min.x, b.Min.x), Mathf.Min(a.Min.y, b.Min.y)), new Vector2Int(Mathf.Max(a.Max.x, b.Max.x), Mathf.Max(a.Max.y, b.Max.y)));
+
+        public static float Average(this Interval<float> self) => (self.Min + self.Max) * 0.5f;
     }
 
     /// <summary>

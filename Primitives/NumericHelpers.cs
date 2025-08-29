@@ -48,6 +48,26 @@ namespace MarkusSecundus.Utils.Primitives
         /// <returns>Remainder after dividing <paramref name="f"/> by <paramref name="mod"/></returns>
         public static float Mod(this float f, float mod) => f.Mod(mod, out _);
 
+
+		//TODO: check if this is correct!
+        public static float DegreesNormalize(this float f) => f.AngleNormalize(180f);
+        public static float AngleNormalize(this float f, float halfTurn)
+        {
+            f = f.Mod(2f*halfTurn);
+            if (f > halfTurn)
+                f -= 2f*halfTurn;
+            return f;
+        }
+
+        public static float DegreesSubtract(this float a, float b) => a.AngleSubtract(b, 180f);
+        public static float AngleSubtract(this float a, float b, float halfTurn)
+        {
+            float ret = a - b;
+            ret = ret.AngleNormalize(halfTurn);
+            return ret;
+        }
+
+
         /// <summary>
         /// Computes 2nd power of given number (<c><paramref name="x"/> * <paramref name="x"/></c>)
         /// </summary>

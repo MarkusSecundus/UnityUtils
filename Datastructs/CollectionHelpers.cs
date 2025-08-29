@@ -77,6 +77,21 @@ namespace MarkusSecundus.Utils.Datastructs
             foreach (var it in others) foreach (var e in it) yield return e;
         }
 
+        public static int RemoveAllDead<T>(this ICollection<T> self, List<object> tempBuffer = null) where T: class
+        {
+            tempBuffer?.Clear();
+            tempBuffer ??= new();
+            int ret = 0;
+            foreach(var e in self)
+                if (e.IsNil()) tempBuffer.Add(e);
+            foreach (var e in tempBuffer)
+            {
+                if (self.Remove((T)e)) ++ret;
+            }
+            tempBuffer.Clear();
+            return ret;
+        }
+
         /// <summary>
         /// Concatenates all elements into a string
         /// </summary>

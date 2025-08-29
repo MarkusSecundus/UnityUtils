@@ -3,6 +3,8 @@ using MarkusSecundus.Utils.Extensions;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEngine;
+using System.Linq;
+using System.Collections;
 
 
 namespace MarkusSecundus.Utils.Procgen.Chunking
@@ -38,7 +40,8 @@ namespace MarkusSecundus.Utils.Procgen.Chunking
         [field: SerializeField] public Vector3 ChunkDimensions { get; private set; }
         [field: SerializeField] public GameObject ChunkPrefab { get; private set; }
         
-        [SerializeField]int _seed=-1;
+        [SerializeField] int _seed=-1;
+        [SerializeField] float _chunkTimeToLive_seconds = -0f;
 
         System.Random _rand;
         public System.Random Rand => _rand ??= (_seed == -1 ? new System.Random() : new System.Random(_seed));
@@ -49,11 +52,43 @@ namespace MarkusSecundus.Utils.Procgen.Chunking
             _chunks.Clear();
             foreach (Transform chunk in _chunksRoot)
                 if (TryParseChunkName(chunk.name, out var coords))
-                    _chunks[coords] = chunk.gameObject;
+                    _chunks[coords] = new ChunkInfo(chunk.gameObject);
+
+            if(_chunkTimeToLive_seconds > Mathf.Epsilon)
+            {
+                StartCoroutine(chunkKiller());
+                IEnumerator chunkKiller()
+                {
+                    while (true)
+                    {
+                        yield return new WaitForSeconds(_chunkTimeToLive_seconds * 0.3f); //arbitrary
+                        foreach(var idx in _chunks.Keys.ToArray())
+                        {
+                            var chunk = _chunks[idx];
+                            if (chunk.Chunk.IsNil())
+                            {
+                                _chunks.Remove(idx);
+                            }
+                            else if(Time.timeAsDouble > (chunk.LastSeenTimestamp + _chunkTimeToLive_seconds))
+                            {
+                                Destroy(chunk.Chunk);
+                                _chunks.Remove(idx);
+                            }
+                        }
+                    }
+                }
+            }
         }
 
+        struct ChunkInfo
+        {
+            public ChunkInfo(GameObject chunk) => (Chunk, LastSeenTimestamp) = (chunk, Time.timeAsDouble);
 
-        Dictionary<Vector3Int, GameObject> _chunks = new();
+            public GameObject Chunk;
+            public double LastSeenTimestamp;
+        }
+
+        Dictionary<Vector3Int, ChunkInfo> _chunks = new();
         public GameObject GetChunkFromLocalCoords(Vector3 worldCoords) => GetChunkByIndex(LocalToChunkCoords(worldCoords));
         public GameObject GetChunkFromWorldCoords(Vector3 worldCoords) => GetChunkByIndex(WorldToChunkCoords(worldCoords));
         public GameObject GetChunkByIndex(Vector3Int chunkCoords)
@@ -63,16 +98,30 @@ namespace MarkusSecundus.Utils.Procgen.Chunking
 
             var chunk = ChunkPrefab ? Instantiate(ChunkPrefab) : new GameObject();
             chunk.name = GenerateChunkName(chunkCoords);
-            chunk.transform.SetParent(GetChunksRoot());
+            chunk.transform.SetParent(GetChunksRoot(), false);
             chunk.transform.localPosition = GetChunkLocalOrigin(chunkCoords);
             chunk.SetActive(true);
             foreach (var toInit in chunk.GetComponentsInChildren<IChunkInitializer>(true))
                 toInit.InitChunk(chunkCoords, this);
-            _chunks[chunkCoords] = chunk;
+            _chunks[chunkCoords] = new ChunkInfo(chunk.gameObject);
             return chunk;
         }
-        public bool TryGetChunkByIndex(Vector3Int chunkCoords, out GameObject ret) 
-            => _chunks.TryGetValue(chunkCoords, out ret) && ret.IsNotNil();
+        public bool TryGetChunkByIndex(Vector3Int chunkCoords, out GameObject ret)
+        {
+            ret = default;
+            if(_chunks.TryGetValue(chunkCoords, out var info))
+            {
+                if (info.IsNil())
+                {
+                    _chunks.Remove(chunkCoords);
+                    return false;
+                }
+                _chunks[chunkCoords] = new ChunkInfo(info.Chunk); //Chunk info is a struct -> to set new timestamp, the whole value must be set anew
+                ret = info.Chunk;
+                return true;
+            }
+            return false;
+        }
         public Vector3Int WorldToChunkCoords(Vector3 worldCoords) => LocalToChunkCoords(transform.GlobalToLocal(worldCoords));
         public Vector3Int LocalToChunkCoords(Vector3 worldCoords)
             => new Vector3Int((int)(worldCoords.x / ChunkDimensions.x), (int)(worldCoords.y / ChunkDimensions.y), (int)(worldCoords.z / ChunkDimensions.z));

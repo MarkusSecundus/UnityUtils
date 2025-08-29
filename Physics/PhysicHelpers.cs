@@ -55,7 +55,7 @@ namespace MarkusSecundus.Utils.Physics
         /// <param name="velocity">Target velocity</param>
         public static void MoveToVelocity(this Rigidbody self, Vector3 velocity)
         {
-            var toApply = velocity - self.velocity;
+            var toApply = velocity - self.linearVelocity;
             self.AddForce(toApply, ForceMode.VelocityChange);
         }
         /// <summary>

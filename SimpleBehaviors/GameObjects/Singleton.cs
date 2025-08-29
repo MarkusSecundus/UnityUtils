@@ -20,7 +20,7 @@ namespace MarkusSecundus.Utils.Behaviors.GameObjects
                 lock (_instanceLock)
                 {
                     if (_instance) return _instance;
-                    _instance = GameObject.FindObjectOfType<TSelf>();
+                    _instance = GameObject.FindFirstObjectByType<TSelf>();
                     if (_instance) return _instance;
 
                     _instance = new GameObject($"({nameof(Singleton<TSelf>)}){typeof(TSelf)}").AddComponent<TSelf>();

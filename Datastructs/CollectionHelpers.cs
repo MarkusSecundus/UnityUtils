@@ -144,6 +144,26 @@ namespace MarkusSecundus.Utils.Datastructs
             System.Array.Copy(toConcat, 0, ret, self.Length, toConcat.Length);
             return ret;
         }
+        public static bool TryGetTheOnlyElement<T>(this IEnumerable<T> self, out T ret)
+        {
+            ret = default;
+            using var it = self.GetEnumerator();
+            if (!it.MoveNext())
+                return false;
+            ret = it.Current;
+            if (it.MoveNext())
+                return false;
+            return true;
+        }
+
+
+        public static (string Left, string Right) SplitByFirstOccurence(this string s, string separator)
+        {
+            var i = s.IndexOf(separator);
+            if (i < 0) return (s, null);
+            return (s.Substring(0, i), s.Substring(i + separator.Length));
+        }
+
 
         public struct IndexedEnumerator<TCollection, TItem> : IEnumerator<TItem>, IEnumerator where TCollection : IReadOnlyList<TItem>
         {

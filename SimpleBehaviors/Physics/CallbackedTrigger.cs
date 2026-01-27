@@ -1,9 +1,11 @@
 using MarkusSecundus.Utils.Extensions;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
+using static Codice.Client.Common.EventTracking.TrackFeatureUseEvent.Features.DesktopGUI.Filters;
 using callback = UnityEngine.Events.UnityAction<UnityEngine.Collider>;
 
 
@@ -17,68 +19,65 @@ namespace MarkusSecundus.Utils.Behaviors.Physics
         public bool ListenToTriggerEvents = true;
         public bool ListenToCollisionEvents = false;
 
+        public string[] TagWhitelist;
+
+
         /// <summary>
         /// Action to be invoked when <c>OnTriggerEnter</c> message is received
         /// </summary>
         public UnityEvent<Collider> OnEnter = new UnityEvent<Collider>();
+
+        /// <summary>
+        /// Action to be invoked when <c>OnTriggerEnter2D</c> message is received
+        /// </summary>
+        public UnityEvent<Collider2D> OnEnter2D = new UnityEvent<Collider2D>();
         /// <summary>
         /// Action to be invoked when <c>OnTriggerExit</c> message is received
         /// </summary>
         public UnityEvent<Collider> OnExit = new UnityEvent<Collider>();
-
-        private IEnumerable<Collider> colliders;
         /// <summary>
-        /// All trigger colliders of this gameobject
+        /// Action to be invoked when <c>OnTriggerExit2D</c> message is received
         /// </summary>
-        public IEnumerable<Collider> Colliders => colliders ??= GetComponents<Collider>().Where(c=>c.isTrigger).ToArray();
+        public UnityEvent<Collider2D> OnExit2D = new UnityEvent<Collider2D>();
 
-        /// <summary>
-        /// Add a triggercollider to <c>this</c> gameobject easily from a script
-        /// </summary>
-        /// <typeparam name="T">Type of triggercollider to by instantiated</typeparam>
-        /// <param name="initializer">Action to be invoked on the newly created collider to initialize it</param>
-        /// <returns><c>this</c> for chaining purposes</returns>
-        public CallbackedTrigger Add<T>(System.Action<T> initializer) where T : Collider
-        {
-            var collider = gameObject.AddComponent<T>();
-            collider.isTrigger = true;
-            initializer?.Invoke(collider);
-
-            return this;
-        }
-
-        /// <summary>
-        /// Shortcut for initializing all the important aspects of this component from a script.
-        /// </summary>
-        /// <param name="layer"><see cref="ColliderLayer"/> to be set for <c>this</c> gameobject</param>
-        /// <param name="onEnter">Callback to be added to <see cref="OnEnter"/></param>
-        /// <param name="onExit">Callback to be added to <see cref="OnExit"/></param>
-        /// <returns><c>this</c> for chaining purposes</returns>
-        public CallbackedTrigger Init(int layer, callback onEnter = null, callback onExit = null)
-        {
-            gameObject.layer = layer;
-            if(onEnter.IsNotNil()) OnEnter.AddListener(onEnter);
-            if(onExit.IsNotNil()) OnExit.AddListener(onExit);
-
-            return this;
-        }
+        bool _isInWhitelist(Component com) => (TagWhitelist.Length <= 0) || TagWhitelist.Contains(com.tag);
 
         void OnTriggerEnter(Collider other)
         {
-            if(ListenToTriggerEvents) OnEnter?.Invoke(other);
+            if(ListenToTriggerEvents && _isInWhitelist(other)) OnEnter?.Invoke(other);
         }
         void OnTriggerExit(Collider other)
         {
-            if(ListenToTriggerEvents) OnExit?.Invoke(other);
+            if(ListenToTriggerEvents && _isInWhitelist(other)) OnExit?.Invoke(other);
         }
 
         private void OnCollisionEnter(Collision collision)
         {
-            if(ListenToCollisionEvents) OnEnter?.Invoke(collision.collider);
+            if(ListenToCollisionEvents && _isInWhitelist(collision.collider)) OnEnter?.Invoke(collision.collider);
         }
         private void OnCollisionExit(Collision collision)
         {
-            if(ListenToCollisionEvents) OnExit?.Invoke(collision.collider);
+            if(ListenToCollisionEvents && _isInWhitelist(collision.collider)) OnExit?.Invoke(collision.collider);
         }
-    }
+
+		private void OnTriggerEnter2D(Collider2D other)
+		{
+            if (ListenToTriggerEvents && _isInWhitelist(other)) OnEnter2D?.Invoke(other);
+		}
+
+		private void OnTriggerExit2D(Collider2D other)
+		{
+			if (ListenToTriggerEvents && _isInWhitelist(other)) OnExit2D?.Invoke(other);
+		}
+
+		private void OnCollisionEnter2D(Collision2D collision)
+		{
+			if (ListenToCollisionEvents && _isInWhitelist(collision.collider)) OnEnter2D?.Invoke(collision.collider);
+		}
+		private void OnCollisionExit2D(Collision2D collision)
+		{
+			if (ListenToCollisionEvents && _isInWhitelist(collision.collider)) OnExit2D?.Invoke(collision.collider);
+
+		}
+	}
 }

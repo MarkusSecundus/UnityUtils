@@ -1,7 +1,6 @@
 using MarkusSecundus.Utils.Extensions;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 
 namespace MarkusSecundus.Utils.Datastructs
@@ -111,6 +110,27 @@ namespace MarkusSecundus.Utils.Datastructs
             return ret.ToString();
         }
 
+
+        public static void ComputeLineNumberFromCharIndex(this string text, int charIndex, out int lineNumber, out int charOnLine)
+        {
+            if (charIndex < text.Length) throw new System.ArgumentException($"Provided charIndex is larger ({charIndex}) than text length ({text.Length})!");
+            lineNumber = 0;
+            charOnLine = 0;
+            for (int i = 0; i < text.Length; ++i)
+            {
+                if(charOnLine-- <= 0)
+                    return;
+                
+                char c = text[i];
+                if (c == '\n' || c == '\r')
+                {
+					(lineNumber, charOnLine) = (lineNumber + 1, 0);
+                    if ((i < text.Length - 1) && c == '\n' && text[i + 1] == '\r') ++i;
+				}
+                else ++charOnLine;
+            }
+        }
+
         /// <summary>
         /// If the collection is null or empty
         /// </summary>
@@ -178,6 +198,7 @@ namespace MarkusSecundus.Utils.Datastructs
             if (i < 0) return (s, null);
             return (s.Substring(0, i), s.Substring(i + separator.Length));
         }
+
 
 
         public struct IndexedEnumerator<TCollection, TItem> : IEnumerator<TItem>, IEnumerator where TCollection : IReadOnlyList<TItem>

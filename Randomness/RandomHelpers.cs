@@ -11,6 +11,9 @@ namespace MarkusSecundus.Utils.Randomness
     /// </summary>
     public static class RandomHelpers
     {
+
+        public static readonly System.Random Rand = new();
+
         /// <summary>
         /// Generate random <see cref="System.Boolean"/>
         /// </summary>

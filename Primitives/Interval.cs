@@ -13,6 +13,8 @@ namespace MarkusSecundus.Utils.Primitives
 
         public static float Clamp(this float f, Interval<float> i) => Mathf.Clamp(f, i.Min, i.Max);
 
+        public static float Normalize(this float f, Interval<float> i) => (f.Clamp(i) - i.Min) / (i.Max - i.Min);
+
         public static bool Contains(this Interval<float> i, float f) => i.Min <= f && f < i.Max;
         public static bool Contains(this Interval<int> i, int t) => i.Min <= t && t < i.Max;
 

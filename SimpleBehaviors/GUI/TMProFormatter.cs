@@ -16,6 +16,7 @@ namespace MarkusSecundus.Utils.Behaviors.GUI
         }
 
         public void SetTextWithIntArgument(int arg) => _text.text = string.Format(Format, arg);
+        public void SetTextWithStringArgument(string arg) => _text.text = string.Format(Format, arg);
 
     }
 }

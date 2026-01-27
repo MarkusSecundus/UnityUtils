@@ -33,7 +33,8 @@ namespace MarkusSecundus.Utils.Behaviors.Actions
         /// </summary>
         public void StartTimer()
         {
-            this.InvokeWithDelay(ToRun.Invoke, DelaySeconds);
+            if(DelaySeconds <= 0) ToRun.Invoke();
+            else this.InvokeWithDelay(ToRun.Invoke, DelaySeconds);
         }
     }
 }

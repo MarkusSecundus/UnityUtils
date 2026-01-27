@@ -556,6 +556,12 @@ namespace MarkusSecundus.Utils.Primitives
         public static Vector3Int AsInt(this Vector3 v) => new Vector3Int((int)v.x, (int)v.y, (int)v.z);
         public static Vector2Int AsInt(this Vector2 v) => new Vector2Int((int)v.x, (int)v.y);
 
+        public static float MinField(this Vector3 v) => Mathf.Min(v.x, Mathf.Min(v.y, v.z));
+        public static float MinField(this Vector2 v) => Mathf.Min(v.x, v.y);
+
+        public static float MaxField(this Vector3 v) => Mathf.Max(v.x, Mathf.Max(v.y, v.z));
+        public static float MaxField(this Vector2 v) => Mathf.Max(v.x, v.y);
+
         public static IEnumerable<Vector2Int> IterateValuesInclusive(this Interval<Vector2Int> self)
         {
             for (long y = self.Min.y; y <= self.Max.y; ++y) //longs just to make sure we don't infinite-cycle on self.Max.x|y equal to int.MaxValue
@@ -563,6 +569,8 @@ namespace MarkusSecundus.Utils.Primitives
                     yield return new Vector2Int((int)x, (int)y);
         }
 
+        public static Quaternion AsRotation2D(this float degrees) => Quaternion.Euler(0, 0, degrees);
+        public static float GetDegrees2D(this Quaternion q) => q.eulerAngles.z;
 
 
         /// <summary>
@@ -611,6 +619,13 @@ namespace MarkusSecundus.Utils.Primitives
         /// <param name="v">Vector to be extracted</param>
         /// <returns>3D Vector with x0y fields of <paramref name="v"/></returns>
         public static Vector3 x0y(this Vector2 v) => new Vector3(v.x, 0, v.y);
+
+        /// <summary>
+        /// Extract xy0 fields of 2D vector into 3D vector
+        /// </summary>
+        /// <param name="v">Vector to be extracted</param>
+        /// <returns>3D Vector with x0y fields of <paramref name="v"/></returns>
+        public static Vector3 xy0(this Vector2 v) => new Vector3(v.x, v.y, 0f);
         /// <summary>
         /// Extract 0yz fields of 2D vector into 3D vector
         /// </summary>

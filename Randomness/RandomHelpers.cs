@@ -64,18 +64,17 @@ namespace MarkusSecundus.Utils.Randomness
         public static T Choice<T>(this IReadOnlyList<T> options, System.Random rand) => options[rand.Next(0, options.Count)];
 
         /// <summary>
-        /// Randomly shuffle contents of provided span.
+        /// Randomly shuffle contents of provided span, using the Fisher-Yates algorithm.
         /// </summary>
         /// <typeparam name="T">Type of elements</typeparam>
         /// <param name="self">Source of randomness</param>
         /// <param name="toShuffle">Span to shuffle</param>
         public static void Shuffle<T>(this System.Random self, System.Span<T> toShuffle)
         {
-            for (int t = 0; t < toShuffle.Length; ++t)
+            for (int t = toShuffle.Length - 1; t > 0; --t)
             {
-                for (int u = t + 1; u < toShuffle.Length; ++u)
-                    if (self.NextBool())
-                        (toShuffle[t], toShuffle[u]) = (toShuffle[u], toShuffle[t]);
+                int u = self.Next(t + 1);
+                (toShuffle[t], toShuffle[u]) = (toShuffle[u], toShuffle[t]);
             }
         }
 

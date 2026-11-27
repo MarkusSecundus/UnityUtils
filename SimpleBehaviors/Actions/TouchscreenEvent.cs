@@ -22,7 +22,14 @@ namespace MarkusSecundus.Utils.Behaviors.Actions
         {
             if (UnityEngine.Input.touchCount <= 0) return;
 
-            var inverseScreenSize = new Vector2(1f / Camera.main.pixelWidth, 1f / Camera.main.pixelHeight);
+            var camera = Camera.main;
+            if (camera == null || camera.pixelWidth == 0 || camera.pixelHeight == 0)
+            {
+                Debug.LogWarning($"{nameof(TouchscreenEvent)}: No valid camera to compute screen-space touch coordinates from.", this);
+                return;
+            }
+
+            var inverseScreenSize = new Vector2(1f / camera.pixelWidth, 1f / camera.pixelHeight);
 
             for (int t = 0; t < UnityEngine.Input.touchCount; ++t)
             {

@@ -113,20 +113,19 @@ namespace MarkusSecundus.Utils.Datastructs
 
         public static void ComputeLineNumberFromCharIndex(this string text, int charIndex, out int lineNumber, out int charOnLine)
         {
-            if (charIndex < text.Length) throw new System.ArgumentException($"Provided charIndex is larger ({charIndex}) than text length ({text.Length})!");
+            if (charIndex < 0 || charIndex > text.Length) throw new System.ArgumentException($"Provided charIndex ({charIndex}) is outside of text length ({text.Length})!");
             lineNumber = 0;
             charOnLine = 0;
-            for (int i = 0; i < text.Length; ++i)
+            for (int i = 0; i < charIndex; ++i)
             {
-                if(charOnLine-- <= 0)
-                    return;
                 
                 char c = text[i];
                 if (c == '\n' || c == '\r')
                 {
-					(lineNumber, charOnLine) = (lineNumber + 1, 0);
-                    if ((i < text.Length - 1) && c == '\n' && text[i + 1] == '\r') ++i;
-				}
+                    // consume the matching part of a \r\n or \n\r pair so it counts as a single line break
+                    if (i + 1 < charIndex && ((c == '\r' && text[i + 1] == '\n') || (c == '\n' && text[i + 1] == '\r'))) ++i;
+                    (lineNumber, charOnLine) = (lineNumber + 1, 0);
+                }
                 else ++charOnLine;
             }
         }

@@ -111,7 +111,7 @@ namespace MarkusSecundus.Utils.Procgen.Chunking
             ret = default;
             if(_chunks.TryGetValue(chunkCoords, out var info))
             {
-                if (info.IsNil())
+                if (info.Chunk.IsNil())
                 {
                     _chunks.Remove(chunkCoords);
                     return false;
@@ -124,7 +124,7 @@ namespace MarkusSecundus.Utils.Procgen.Chunking
         }
         public Vector3Int WorldToChunkCoords(Vector3 worldCoords) => LocalToChunkCoords(transform.GlobalToLocal(worldCoords));
         public Vector3Int LocalToChunkCoords(Vector3 worldCoords)
-            => new Vector3Int((int)(worldCoords.x / ChunkDimensions.x), (int)(worldCoords.y / ChunkDimensions.y), (int)(worldCoords.z / ChunkDimensions.z));
+            => new Vector3Int(Mathf.FloorToInt(worldCoords.x / ChunkDimensions.x), Mathf.FloorToInt(worldCoords.y / ChunkDimensions.y), Mathf.FloorToInt(worldCoords.z / ChunkDimensions.z));
 
         public Vector3 GetChunkLocalOrigin(Vector3Int chunkCoords) => ChunkDimensions.MultiplyElems(chunkCoords);
         public Vector3 GetChunkWorldOrigin(Vector3Int chunkCoords) => transform.LocalToGlobal(GetChunkLocalOrigin(chunkCoords));

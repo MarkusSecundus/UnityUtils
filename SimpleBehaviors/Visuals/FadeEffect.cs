@@ -38,7 +38,7 @@ namespace MarkusSecundus.Utils.Behaviors.Cosmetics
             else if (_onStart == ActionOnStart.FadeOut) FadeOut(onComplete.Invoke);
         }
         public void FadeOut() => FadeOut(duration_seconds);
-        public void FadeOut(float duration) => FadeOut(null, duration_seconds);
+        public void FadeOut(float duration) => FadeOut(null, duration);
         public void FadeOut(System.Action onFinished, float? duration = null, bool includeDefaultAction = true) => _runEffect(alphaHigh, alphaLow, duration ?? duration_seconds, ease, onFinished, includeDefaultAction);
         public void FadeIn() => FadeIn(duration_seconds);
         public void FadeIn(float duration) => FadeIn(null, duration);
@@ -54,7 +54,7 @@ namespace MarkusSecundus.Utils.Behaviors.Cosmetics
             {
                 rend.gameObject.SetActive(true);
                 rend.color = rend.color.With(a: alphaBegin);
-                var tween = last = rend.DOFade(alphaEnd, duration_seconds).SetEase(ease);
+                var tween = last = rend.DOFade(alphaEnd, duration).SetEase(ease);
                 _tweens.Add(tween);
                 if (alphaEnd <= 0f) tween.onComplete += () => rend.gameObject.SetActive(false);
             }

@@ -43,14 +43,14 @@ namespace MarkusSecundus.Utils.Extensions
                 joint.slerpDrive = tmp;
             }, endValue, duration).SetTarget(joint).SetUpdate(UpdateType.Fixed);
         public static TweenerCore<float, float, FloatOptions> DOSlerpDrive_PositionDamper(this ConfigurableJoint joint, float endValue, float duration)
-            => DOTween.To(() => joint.slerpDrive.maximumForce, v =>
+            => DOTween.To(() => joint.slerpDrive.positionDamper, v =>
             {
                 var tmp = joint.slerpDrive;
                 tmp.positionDamper = v;
                 joint.slerpDrive = tmp;
             }, endValue, duration).SetTarget(joint).SetUpdate(UpdateType.Fixed);
         public static TweenerCore<float, float, FloatOptions> DOSlerpDrive_PositionSpring(this ConfigurableJoint joint, float endValue, float duration)
-            => DOTween.To(() => joint.slerpDrive.maximumForce, v =>
+            => DOTween.To(() => joint.slerpDrive.positionSpring, v =>
             {
                 var tmp = joint.slerpDrive;
                 tmp.positionSpring = v;

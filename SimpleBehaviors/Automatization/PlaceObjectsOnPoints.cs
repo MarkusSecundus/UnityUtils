@@ -86,8 +86,7 @@ namespace MarkusSecundus.Utils.Behaviors.Automatization
         {
             while (ParentToFill.childCount > 0)
             {
-                foreach (Transform t in ParentToFill)
-                    Object.DestroyImmediate(t.gameObject);
+                Object.DestroyImmediate(ParentToFill.GetChild(0).gameObject);
             }
         }
     }

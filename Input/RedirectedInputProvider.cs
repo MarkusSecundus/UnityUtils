@@ -11,7 +11,7 @@ namespace MarkusSecundus.Utils.Input
 
         public override float GetAxis(TInputAxis axis) => _source?.GetAxis(axis) ?? 0f;
 
-        public override float GetAxisRaw(TInputAxis axis) => _source?.GetAxis(axis) ?? 0f;
+        public override float GetAxisRaw(TInputAxis axis) => _source?.GetAxisRaw(axis) ?? 0f;
 
         public override bool GetKey(KeyCode c) => _source?.GetKey(c) ?? false;
 

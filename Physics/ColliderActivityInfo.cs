@@ -32,7 +32,7 @@ namespace MarkusSecundus.Utils.Physics
         public TElement Exit(Component other)
         {
             var target = Extractor(other);
-            if (target.IsNotNil()) return default;
+            if (target.IsNil()) return default;
             if (!_active.TryGetValue(target, out var list)) return default;
             if (!list.Remove(other) || !list.IsEmpty()) return default;
             _active.Remove(target);
